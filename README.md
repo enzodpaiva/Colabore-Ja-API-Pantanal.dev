@@ -1,5 +1,26 @@
 # Bem-vindo ao Colabore Já
 
+<p align="center">
+  <img src="https://img.shields.io/static/v1?label=react&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
+  <img alt="GitHub" src="https://img.shields.io/static/v1?label=GitHub&message=deploy&color=blue&style=for-the-badge&logo=github"/>
+  <img alt="Docker" src="https://img.shields.io/static/v1?label=Docker&message=container&color=blue&style=for-the-badge&logo=docker"/>
+  <img alt="ECMAScript" src="https://img.shields.io/static/v1?label=ECMAScript&message=ES12&color=yellow&style=for-the-badge&logo=javascript"/>
+  <img src="http://img.shields.io/static/v1?label=License&message=MIT&color=green&style=for-the-badge"/>
+  <img src="http://img.shields.io/static/v1?label=TESTES&message=%3E100&color=GREEN&style=for-the-badge"/>
+   <img src="http://img.shields.io/static/v1?label=VERSAO&message=1.0.0&color=GREEN&style=for-the-badge"/>
+</p>
+
+
+### Tópicos 
+
+:small_blue_diamond: [Sobre o Projeto](#sobre-o-projeto)
+
+:small_blue_diamond: [Principais Recursos](#principais-recursos)
+
+:small_blue_diamond: [Desenvolvedores](#desenvolvedores)
+
+:small_blue_diamond: [Agradecimentos](#agradecimentos)
+
 ## Sobre o Projeto
 
 **Colabore Já** é uma plataforma inovadora que visa conectar colaboradores da B3 Social a ações sociais, promovendo o engajamento e o impacto positivo na comunidade. Nosso objetivo é criar uma rede de solidariedade onde os colaboradores da B3 Social possam encontrar, participar e contribuir para diversas iniciativas sociais de forma fácil e eficiente.
