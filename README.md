@@ -16,6 +16,8 @@
 
 :small_blue_diamond: [Principais Recursos](#principais-recursos)
 
+:small_blue_diamond: [Como rodar o projeto](#como-rodar-o-projeto_forward)
+
 :small_blue_diamond: [Desenvolvedores](#desenvolvedores)
 
 :small_blue_diamond: [Agradecimentos](#agradecimentos)
@@ -42,6 +44,25 @@ Você pode contribuir para o **Colabore Já** de várias maneiras:
 3. **Testes:** Teste o sistema e relate qualquer problema encontrado.
 4. **Documentação:** Contribua para a documentação do projeto, tornando-o mais acessível a todos.
 5. **Ideias:** Compartilhe suas ideias e sugestões para aprimorar o projeto. -->
+
+## Como rodar o projeto :arrow_forward:
+
+##### Clonar projeto:
+
+```
+git clone git@github.com:enzodpaiva/Colabore-Ja-API-Pantanal.dev.git
+```
+
+##### Subir aplicação através do docker
+
+```bash 
+docker-compose up -d --build
+```
+##### Parar container
+
+```bash 
+docker-compose down
+``` 
 
 ## Desenvolvedores
 
