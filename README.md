@@ -16,7 +16,7 @@
 
 :small_blue_diamond: [Principais Recursos](#principais-recursos)
 
-:small_blue_diamond: [Como rodar o projeto](#como-rodar-o-projeto_forward)
+:small_blue_diamond: [Como rodar o projeto](#como-rodar-o-projeto)
 
 :small_blue_diamond: [Desenvolvedores](#desenvolvedores)
 
