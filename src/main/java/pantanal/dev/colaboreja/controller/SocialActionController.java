@@ -10,6 +10,6 @@ public class SocialActionController {
     
     @GetMapping
     public String getHello() {
-        return "hello world";
+        return "hello world!dsadsad";
     }
 }
