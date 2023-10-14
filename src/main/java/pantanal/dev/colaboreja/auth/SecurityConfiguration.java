@@ -10,13 +10,7 @@ import static pantanal.dev.colaboreja.auth.Permission.ADMIN_CREATE;
 import static pantanal.dev.colaboreja.auth.Permission.ADMIN_DELETE;
 import static pantanal.dev.colaboreja.auth.Permission.ADMIN_READ;
 import static pantanal.dev.colaboreja.auth.Permission.ADMIN_UPDATE;
-import static pantanal.dev.colaboreja.auth.Permission.MANAGER_READ;
-import static pantanal.dev.colaboreja.auth.Permission.MANAGER_CREATE;
-import static pantanal.dev.colaboreja.auth.Permission.MANAGER_DELETE;
-import static pantanal.dev.colaboreja.auth.Permission.MANAGER_UPDATE;
 import static pantanal.dev.colaboreja.auth.Role.ADMIN;
-import static pantanal.dev.colaboreja.auth.Role.MANAGER;
-
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -14,11 +14,6 @@ import static pantanal.dev.colaboreja.auth.Permission.ADMIN_CREATE;
 import static pantanal.dev.colaboreja.auth.Permission.ADMIN_DELETE;
 import static pantanal.dev.colaboreja.auth.Permission.ADMIN_READ;
 import static pantanal.dev.colaboreja.auth.Permission.ADMIN_UPDATE;
-import static pantanal.dev.colaboreja.auth.Permission.MANAGER_CREATE;
-import static pantanal.dev.colaboreja.auth.Permission.MANAGER_DELETE;
-import static pantanal.dev.colaboreja.auth.Permission.MANAGER_READ;
-import static pantanal.dev.colaboreja.auth.Permission.MANAGER_UPDATE;
-
 
 
 @RequiredArgsConstructor
@@ -30,21 +25,10 @@ public enum Role {
                   ADMIN_READ,
                   ADMIN_UPDATE,
                   ADMIN_DELETE,
-                  ADMIN_CREATE,
-                  MANAGER_READ,
-                  MANAGER_UPDATE,
-                  MANAGER_DELETE,
-                  MANAGER_CREATE
+                  ADMIN_CREATE
+             
           )
   ),
-//   MANAGER(
-//           Set.of(
-//                   MANAGER_READ,
-//                   MANAGER_UPDATE,
-//                   MANAGER_DELETE,
-//                   MANAGER_CREATE
-//           )
-//   )
 
   ;
 

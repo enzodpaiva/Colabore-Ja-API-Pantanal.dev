@@ -6,8 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import static pantanal.dev.colaboreja.auth.Role.ADMIN;
-import static pantanal.dev.colaboreja.auth.Role.MANAGER;
-
 import pantanal.dev.colaboreja.model.RegisterRequest;
 import pantanal.dev.colaboreja.service.AuthenticationService;
 
@@ -31,16 +29,7 @@ public class ColaboreJaApplication {
 					.password("password")
 					.role(ADMIN)
 					.build();
-			System.out.println("Admin token: " + service.register(admin).getAccessToken());
-
-			var manager = RegisterRequest.builder()
-					.firstname("Admin")
-					.lastname("Admin")
-					.email("manager@mail.com")
-					.password("password")
-					.role(MANAGER)
-					.build();
-			System.out.println("Manager token: " + service.register(manager).getAccessToken());
+			System.out.println("Admin token: " + service.register(admin).getAccessToken());		
 
 		};
 	}
