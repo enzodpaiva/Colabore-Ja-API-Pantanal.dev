@@ -6,6 +6,7 @@ services:
       - ./src:/app/src
     ports:
       - "8080:8080"
+      - "5005:5005"
     command: sh ./docker-entrypoint.sh
     depends_on:
       - db
