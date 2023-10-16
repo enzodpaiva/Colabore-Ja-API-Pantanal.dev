@@ -66,8 +66,8 @@ docker-compose down
 
 ## Desenvolvedores
 
-| [<img src="https://github.com/enzodpaiva.png?size=460u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>Enzo Paiva</sub>](https://github.com/enzodpaiva) |  [<img src="https://github.com/m4phx.png?size=460&u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>Alvaro Abdalla</sub>](https://github.com/m4phx) |  [<img src="https://github.com/Mar-1.png?size=460&u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>Marcelo Soares Antunes</sub>](https://github.com/Mar-1) | [<img src="https://github.com/jpdants.png?size=460&u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>João Paulo Dantas</sub>](https://github.com/jpdants) |
-| :---: | :---: | :---: | :---: |
+| [<img src="https://github.com/enzodpaiva.png?size=460u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>Enzo Paiva</sub>](https://github.com/enzodpaiva) | [<img src="https://github.com/Mar-1.png?size=460&u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>Marcelo Soares Antunes</sub>](https://github.com/Mar-1) | [<img src="https://github.com/jpdants.png?size=460&u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>João Paulo Dantas</sub>](https://github.com/jpdants) |
+| :---: | :---: | :---: |
 
 ## Agradecimentos
 
