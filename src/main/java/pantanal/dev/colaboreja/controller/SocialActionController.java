@@ -36,17 +36,6 @@ public class SocialActionController {
                 .build();
     }
 
-    private SocialActionModel convertToEntity(SocialActionDTO socialAction) {
-        return SocialActionModel.builder()
-                .id(socialAction.getId())
-                .name(socialAction.getName())
-                .description(socialAction.getDescription())
-                .initDateTime(socialAction.getInitDateTime())
-                .finishDateTime(socialAction.getFinishDateTime())
-//                .socialActionCategoryId(socialAction.getSocialActionCategoryId())
-                .build();
-    }
-
     @GetMapping
     public Collection<SocialActionDTO> getAllSocialAction(
             @Parameter(description = "Nome da ação social")

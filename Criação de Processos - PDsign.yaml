@@ -1,0 +1,745 @@
+openapi: 3.0.3
+info:
+  title: Criação de Processo
+  description: |-
+    A "Criação de Processo" é um serviço que permite aos usuários iniciar a criação de um novo processo no sistema. Um processo pode ser definido como uma sequência de etapas ou atividades relacionadas, executadas em uma determinada ordem. Essa API oferece endpoints para criar, visualizar e atualizar informações sobre os processos em andamento. Como também, fornece endpoints para criação de usuário e para a assinatura com biometria facial.
+    <br><br>
+    Para o uso do swagger utilizando o editor on-line, segue o link de uma sugestão de extensão: https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf
+  version: 1.0.0
+servers:
+  - url: https://esign-api-pprd.portaldedocumentos.com.br
+  - url: https://h-auth.pd.tec.br
+paths:
+  /auth/realms/assinador/protocol/openid-connect/token:
+    servers:
+      - url: https://h-auth.pd.tec.br
+    post:
+      tags:
+        - Login
+      summary: Realizar login
+      description: Este endpoint permite que os usuários façam login no sistema. É necessário fornecer um nome de usuário, senha e informações adicionais para autenticação. O endpoint retorna um token de acesso válido para autenticação subsequente.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/loginRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginResponse'
+
+    get:
+      description: ""
+      parameters: [ ]
+      responses:
+        "200":
+          description: "OK"
+    put:
+      description: ""
+      parameters: [ ]
+      responses:
+        "200":
+          description: "OK"
+  /profiles:
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    get:
+      tags:
+        - Criação de Usuário
+      summary: Endpoint para criação de usuário
+      parameters:
+        - in: header
+          name: x-tenant
+          schema:
+            type: string
+            format: uuid
+          required: true
+      security:
+        - BearerAuth: [ ]
+      description: resgatar os perfis para ser usado na criação de usuário
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getProfilesResponse'
+  
+  /users:
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    get:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para resgatar usúario
+      description: Este endpoint retorna informações sobre os usuários da requisição. É necessário fornecer o cabeçalho "x-tenant" com um identificador válido. Também é possível filtrar os resultados usando o parâmetro de consulta "query"
+      parameters:
+        - in: header
+          name: x-tenant
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: query
+          x-example: 'name starts "Andersson"'
+          schema:
+            type: string
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/usersResponse'
+    post:
+      tags:
+        - Criação de Usuário
+      summary: Endpoint para criação de usuário
+      parameters:
+        - in: header
+          name: x-tenant
+          schema:
+            type: string
+            format: uuid
+          required: true
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUserRequest'
+      description: Na criação de usuário é necessária resgatar os perfis no endpoint /perfis e para as empresas tem-se o endpoint para resgatar a empresa denominado /companies, situado na criação de processo.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createUserResponse'
+  
+
+  /companies:
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    get:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para resgatar empresa
+      description: Este endpoint retorna informações sobre a empresa da requisição. É necessário fornecer o cabeçalho "x-tenant" com um identificador válido. Também é possível filtrar os resultados usando o parâmetro de consulta "query".
+      parameters:
+        - in: header
+          name: x-tenant
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: query
+          x-example: 'name starts "PDTec"'
+          schema:
+            type: string
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/companyResponse'
+  
+  /actiontypes:
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    get:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para resgatar ActionType
+      description: Este endpoint retorna informações sobre o ActionType da requisição. É necessário fornecer o cabeçalho "x-tenant" com um identificador válido. Também é possível filtrar os resultados usando o parâmetro de consulta "query".
+      parameters:
+        - in: header
+          name: x-tenant
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: query
+          x-example: 'name starts "PDTec"'
+          schema:
+            type: string
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/actionTypesResponse'
+
+    post:
+      description: ""
+      parameters: [ ]
+      responses:
+        "200":
+          description: "OK"
+  /authenticationtypes:
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    get:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para resgatar AuthenticationType
+      description: Este endpoint retorna informações sobre os tipos de autenticação na requisição.
+      parameters:
+        - in: header
+          name: x-tenant
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: query
+          x-example: 'description = "Soft Login"'
+          schema:
+            type: string
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/authenticationTypesResponse'
+
+  /responsibilities:
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    get:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para resgatar Responsability
+      description: Este endpoint retorna informações sobre os tipos de responsabilidade disponíveis na requisição.
+      parameters:
+        - in: header
+          name: x-tenant
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: query
+          x-example: 'name = "Testemunha"'
+          schema:
+            type: string
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/responsabilityResponse'
+  /processes:
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    post:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para criação de processo
+      parameters:
+        - in: header
+          name: x-tenant
+          schema:
+            type: string
+            format: uuid
+          required: true
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createProcessesRequest'
+      description: Criar processo para incluir um documento
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createProcessesResponse'
+  
+  /processes/{idProcess}/documents:
+    parameters:
+      - in: header
+        name: x-tenant
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: idProcess
+        required: true
+        schema:
+          type: string
+          minimum: 1
+        description: ID de um processo existente
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    post:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para adicionar o documento
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addDocumentRequest'
+      description: Criação de documento
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/addDocumentResponse'
+  
+  /processes/{idProcess}/documents/{documentId}/upload:
+    parameters:
+      - in: header
+        name: x-tenant
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: idProcess
+        required: true
+        schema:
+          type: string
+          minimum: 1
+        description: ID de um processo existente
+      - in: path
+        name: documentId
+        required: true
+        schema:
+          type: string
+          minimum: 1
+        description: ID de um documento existente
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    post:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para adicionar o documento
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful operation
+  
+  /processes/{idProcess}:
+    parameters:
+      - in: header
+        name: x-tenant
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: idProcess
+        required: true
+        schema:
+          type: string
+          minimum: 1
+        description: ID de um processo existente
+    servers:
+      - url: https://esign-api-pprd.portaldedocumentos.com.br
+    patch:
+      tags:
+        - Criação de Processo
+      summary: Endpoint para atualização do status do documento
+      description: atualização de status, é necessária mudar o status para "RUNNING"
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/statusProcessRequest'
+      responses:
+        '200':
+          description: Successful operation
+
+components:
+  schemas:
+    loginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        grant_type:
+          type: string
+      required:
+        - username
+        - password
+        - client_id
+        - grant_type
+    
+    loginResponse:
+      type: object
+      properties:
+        acessToken:
+          type: string
+
+    createProcessesRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        requester:
+          type: object
+          properties:
+            id:
+              type: string
+        company:
+          type: object
+          properties:
+            id:
+              type: string
+        flow:
+          type: object
+          properties:
+            defineOrderOfInvolves:
+              type: boolean
+            hasExpiration:
+              type: boolean
+            expiration:
+              type: string
+              format: date
+            readRequired:
+              type: boolean
+        members:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              documentType:
+                type: string
+              documentCode:
+                type: string
+              actionType:
+                type: object
+                properties:
+                  id:
+                    type: string
+              responsibility:
+                type: object
+                properties:
+                  id:
+                    type: string
+              authenticationType:
+                type: object
+                properties:
+                  id:
+                    type: string
+              order:
+                type: integer
+              type:
+                type: string
+              representation:
+                type: object
+                properties:
+                  willActAsPhysicalPerson:
+                    type: boolean
+                  willActRepresentingAnyCompany:
+                    type: boolean
+                  companies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+    createProcessesResponse:
+      type: object
+      properties:
+        id:
+          type: string
+
+    usersResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        documentCode:
+          type: string
+        documentType:
+          type: string
+        type:
+          type: string
+
+    companyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        corporateName:
+          type: string
+        createdBy:
+          type: string
+
+    actionTypesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+              description:
+                type: string
+    authenticationTypesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+              description:
+                type: string
+    responsabilityResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              aliasName:
+                type: string
+    
+    addDocumentRequest:
+      type: object
+      properties:
+        extension:
+          type: string
+        isPendency:
+          type: boolean
+        name:
+          type: string
+        order:
+          type: integer
+        type:
+          type: string
+
+    addDocumentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+
+    statusProcessRequest:
+      type: object
+      properties:
+        status:
+          type: string
+    
+    createUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        documentType:
+          type: string
+        documentCode:
+          type: string
+        profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              created:
+                type: string
+              updated:
+                type: string
+        notifyWhenReceiveProcess:
+          type: boolean
+        notifyDaily:
+          type: boolean
+        notifyWhenProcessWasFinished:
+          type: boolean
+        companies:
+          type: array
+          items:
+            type: object
+            properties:
+              company:
+                type: object
+                properties:
+                  id:
+                    type: string
+              businessUnities:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+
+    getProfilesResponse:
+      type: object
+      properties:
+        profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              created:
+                type: string
+              updated:
+                type: string
+
+    createUserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        createdBy:
+          type: string
+        created:
+          type: string
+        updatedBy:
+          type: string
+        updated:
+          type: string
+        name:
+          type: string
+        initials:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        documentCode:
+          type: string
+        documentType:
+          type: string
+        notifyWhenReceiveProcess:
+          type: boolean
+        notifyDaily:
+          type: boolean
+        notifyWhenProcessWasFinished:
+          type: boolean
+        companies:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              createdBy:
+                type: string
+              created:
+                type: string
+              updatedBy:
+                type: string
+              updated:
+                type: string
+              company:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  selfLink:
+                    type: string
+        businessUnities:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              selfLink:
+                type: string
+        type:
+          type: string
+        accepted:
+          type: boolean
+        profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -26,7 +26,7 @@ public class ExceptionController {
 
         fieldErrors.forEach(
                 e -> {
-                    ErroResponse detalhes = new ErroResponse(e.getDefaultMessage(), new Date().getTime());
+                    ErroResponse detalhes = new ErroResponse(e.getField() + ", " + e.getDefaultMessage(), new Date().getTime());
                     listaErrors.add(detalhes);
                 });
         return ResponseEntity
@@ -37,7 +37,7 @@ public class ExceptionController {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErroResponse> handleItemNotFoundException(NoSuchElementException rnfe, HttpServletRequest request){
 
-        ErroResponse detalhes = new ErroResponse(rnfe.getMessage(), new Date().getTime());
+        ErroResponse detalhes = new ErroResponse(rnfe.getClass().getName() + ", " + rnfe.getMessage(), new Date().getTime());
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
