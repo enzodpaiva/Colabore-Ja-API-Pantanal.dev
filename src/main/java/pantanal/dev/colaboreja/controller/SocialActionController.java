@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/social-action")
+@RequestMapping("/api/social-action")
 public class SocialActionController {
 
     @Autowired
