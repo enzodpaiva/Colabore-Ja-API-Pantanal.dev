@@ -6,11 +6,11 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-import static pantanal.dev.colaboreja.auth.Permission.ADMIN_CREATE;
-import static pantanal.dev.colaboreja.auth.Permission.ADMIN_DELETE;
-import static pantanal.dev.colaboreja.auth.Permission.ADMIN_READ;
-import static pantanal.dev.colaboreja.auth.Permission.ADMIN_UPDATE;
-import static pantanal.dev.colaboreja.auth.Role.ADMIN;
+import static pantanal.dev.colaboreja.enumerable.PermissionEnum.ADMIN_CREATE;
+import static pantanal.dev.colaboreja.enumerable.PermissionEnum.ADMIN_DELETE;
+import static pantanal.dev.colaboreja.enumerable.PermissionEnum.ADMIN_READ;
+import static pantanal.dev.colaboreja.enumerable.PermissionEnum.ADMIN_UPDATE;
+import static pantanal.dev.colaboreja.enumerable.RoleEnum.ADMIN;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**",
+    private static final String[] WHITE_LIST_URL = {"/api/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -54,11 +54,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name())
-                                .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name())
-                                .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(ADMIN_CREATE.name())
-                                .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name())
-                                .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name())
+                                .requestMatchers("/api/management/**").hasAnyRole(ADMIN.name())
+                                .requestMatchers(GET, "/api/management/**").hasAnyAuthority(ADMIN_READ.name())
+                                .requestMatchers(POST, "/api/management/**").hasAnyAuthority(ADMIN_CREATE.name())
+                                .requestMatchers(PUT, "/api/management/**").hasAnyAuthority(ADMIN_UPDATE.name())
+                                .requestMatchers(DELETE, "/api/management/**").hasAnyAuthority(ADMIN_DELETE.name())
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -66,7 +66,7 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                        logout.logoutUrl("/api/v1/auth/logout")
+                        logout.logoutUrl("/api/auth/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 )

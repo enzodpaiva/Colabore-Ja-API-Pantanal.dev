@@ -11,12 +11,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import pantanal.dev.colaboreja.model.AuthenticationRequest;
-import pantanal.dev.colaboreja.model.AuthenticationResponse;
-import pantanal.dev.colaboreja.model.RegisterRequest;
-import pantanal.dev.colaboreja.model.Token;
-import pantanal.dev.colaboreja.model.TokenType;
-import pantanal.dev.colaboreja.model.User;
+import pantanal.dev.colaboreja.DTO.AuthenticationDTO;
+import pantanal.dev.colaboreja.DTO.response.AuthenticationResponse;
+import pantanal.dev.colaboreja.DTO.RegisterDTO;
+import pantanal.dev.colaboreja.enumerable.TokenTypeEnum;
+import pantanal.dev.colaboreja.model.*;
+import pantanal.dev.colaboreja.model.UserModel;
 import pantanal.dev.colaboreja.repository.TokenRepository;
 import pantanal.dev.colaboreja.repository.UserRepository;
 
@@ -37,8 +37,8 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
+    public AuthenticationResponse register(RegisterDTO request) {
+        var user = UserModel.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
@@ -55,7 +55,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationDTO request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -74,18 +74,18 @@ public class AuthenticationService {
                 .build();
     }
 
-    private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
+    private void saveUserToken(UserModel user, String jwtToken) {
+        var token = TokenModel.builder()
                 .user(user)
                 .token(jwtToken)
-                .tokenType(TokenType.BEARER)
+                .tokenTypeEnum(TokenTypeEnum.BEARER)
                 .expired(false)
                 .revoked(false)
                 .build();
         tokenRepository.save(token);
     }
 
-    private void revokeAllUserTokens(User user) {
+    private void revokeAllUserTokens(UserModel user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;

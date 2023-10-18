@@ -1,4 +1,4 @@
-package pantanal.dev.colaboreja.model;
+package pantanal.dev.colaboreja.DTO.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

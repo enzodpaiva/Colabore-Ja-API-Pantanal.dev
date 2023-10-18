@@ -4,10 +4,10 @@ package pantanal.dev.colaboreja.repository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pantanal.dev.colaboreja.model.User;
+import pantanal.dev.colaboreja.model.UserModel;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<UserModel, Integer> {
 
-    Optional<User> findByEmail(String email);
+    Optional<UserModel> findByEmail(String email);
 
 }

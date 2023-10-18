@@ -1,6 +1,6 @@
 package pantanal.dev.colaboreja.auth;
 
-import pantanal.dev.colaboreja.model.Token;
+import pantanal.dev.colaboreja.model.TokenModel;
 import pantanal.dev.colaboreja.repository.TokenRepository;
 import pantanal.dev.colaboreja.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        if (request.getServletPath().contains("/api/v1/auth")) {
+        if (request.getServletPath().contains("/api/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             var isTokenValid = tokenRepository.findByToken(jwt)
-                    .map(t -> !((Token) t).isExpired() && !((Token) t).isRevoked())
+                    .map(t -> !((TokenModel) t).isExpired() && !((TokenModel) t).isRevoked())
                     .orElse(false);
             if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
