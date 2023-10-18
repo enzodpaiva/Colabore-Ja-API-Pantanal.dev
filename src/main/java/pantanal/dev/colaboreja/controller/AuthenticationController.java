@@ -3,9 +3,9 @@ package pantanal.dev.colaboreja.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import pantanal.dev.colaboreja.model.AuthenticationRequest;
-import pantanal.dev.colaboreja.model.AuthenticationResponse;
-import pantanal.dev.colaboreja.model.RegisterRequest;
+import pantanal.dev.colaboreja.DTO.AuthenticationDTO;
+import pantanal.dev.colaboreja.DTO.response.AuthenticationResponse;
+import pantanal.dev.colaboreja.DTO.RegisterDTO;
 import pantanal.dev.colaboreja.service.AuthenticationService;
 
 import org.springframework.http.ResponseEntity;
@@ -25,13 +25,13 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
+            @RequestBody RegisterDTO request
     ) {
         return ResponseEntity.ok(service.register(request));
     }
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+            @RequestBody AuthenticationDTO request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
     }

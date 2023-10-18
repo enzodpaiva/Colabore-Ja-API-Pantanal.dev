@@ -2,8 +2,8 @@ package pantanal.dev.colaboreja.service;
 
 
 import lombok.RequiredArgsConstructor;
-import pantanal.dev.colaboreja.model.ChangePasswordRequest;
-import pantanal.dev.colaboreja.model.User;
+import pantanal.dev.colaboreja.DTO.ChangePasswordDTO;
+import pantanal.dev.colaboreja.model.UserModel;
 import pantanal.dev.colaboreja.repository.UserRepository;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,9 +18,9 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
-    public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
+    public void changePassword(ChangePasswordDTO request, Principal connectedUser) {
 
-        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        var user = (UserModel) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
         // Checar se sua senha está certa
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {

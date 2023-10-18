@@ -13,13 +13,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pantanal.dev.colaboreja.enumerable.TokenTypeEnum;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Token {
+public class TokenModel {
 
     @Id
     @GeneratedValue
@@ -29,7 +30,7 @@ public class Token {
     public String token;
 
     @Enumerated(EnumType.STRING)
-    public TokenType tokenType = TokenType.BEARER;
+    public TokenTypeEnum tokenTypeEnum = TokenTypeEnum.BEARER;
 
     public boolean revoked;
 
@@ -37,5 +38,5 @@ public class Token {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    public User user;
+    public UserModel user;
 }

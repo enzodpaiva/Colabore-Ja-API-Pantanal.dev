@@ -17,15 +17,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pantanal.dev.colaboreja.auth.Role;
+import pantanal.dev.colaboreja.enumerable.RoleEnum;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user")
-public class User implements UserDetails {
+@Table(name = "\"user\"")
+public class UserModel implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -36,10 +36,10 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private RoleEnum role;
 
     @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    private List<TokenModel> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

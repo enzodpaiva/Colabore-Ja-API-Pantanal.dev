@@ -1,4 +1,4 @@
-package pantanal.dev.colaboreja.auth;
+package pantanal.dev.colaboreja.enumerable;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +10,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-import static pantanal.dev.colaboreja.auth.Permission.ADMIN_CREATE;
-import static pantanal.dev.colaboreja.auth.Permission.ADMIN_DELETE;
-import static pantanal.dev.colaboreja.auth.Permission.ADMIN_READ;
-import static pantanal.dev.colaboreja.auth.Permission.ADMIN_UPDATE;
+import static pantanal.dev.colaboreja.enumerable.PermissionEnum.ADMIN_CREATE;
+import static pantanal.dev.colaboreja.enumerable.PermissionEnum.ADMIN_DELETE;
+import static pantanal.dev.colaboreja.enumerable.PermissionEnum.ADMIN_READ;
+import static pantanal.dev.colaboreja.enumerable.PermissionEnum.ADMIN_UPDATE;
 
 
 @RequiredArgsConstructor
-public enum Role {
+public enum RoleEnum {
 
-    USER(Collections.emptySet()),
+
+
+    SUPER_ADMIN(Collections.emptySet()),
     ADMIN(
             Set.of(
                     ADMIN_READ,
@@ -29,11 +31,14 @@ public enum Role {
 
             )
     ),
+    EDITOR(Collections.emptySet()),
+    AUTHOR(Collections.emptySet()),
+    COLABORATOR(Collections.emptySet()),
 
     ;
 
     @Getter
-    private final Set<Permission> permissions;
+    private final Set<PermissionEnum> permissions;
 
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = getPermissions()

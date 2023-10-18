@@ -1,7 +1,7 @@
 package pantanal.dev.colaboreja.controller;
 
 import lombok.RequiredArgsConstructor;
-import pantanal.dev.colaboreja.model.ChangePasswordRequest;
+import pantanal.dev.colaboreja.DTO.ChangePasswordDTO;
 import pantanal.dev.colaboreja.service.UserService;
 
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class UserController {
 
     @PatchMapping
     public ResponseEntity<?> changePassword(
-            @RequestBody ChangePasswordRequest request,
+            @RequestBody ChangePasswordDTO request,
             Principal connectedUser
     ) {
         service.changePassword(request, connectedUser);

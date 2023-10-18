@@ -1,4 +1,4 @@
-package pantanal.dev.colaboreja.model;
+package pantanal.dev.colaboreja.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+public class AuthenticationDTO {
 
     private String email;
     String password;
