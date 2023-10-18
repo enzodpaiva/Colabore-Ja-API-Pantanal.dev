@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/social-action-contract")
+@RequestMapping("/api/social-action-contract")
 public class SocialActionContractController {
     @Autowired
     private SocialActionContractService service;

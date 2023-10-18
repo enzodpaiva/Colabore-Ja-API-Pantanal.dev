@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/social-action-category")
+@RequestMapping("/api/social-action-category")
 public class SocialActionCategoryController {
     @Autowired
     private SocialActionCategoryService service;
