@@ -1,5 +1,6 @@
 package pantanal.dev.colaboreja.DTO;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ public class RegisterDTO {
 
     private String firstname;
     private String lastname;
+    @Email(message = "Email invalido")
     private String email;
     private String password;
     private RoleEnum role;

@@ -2,6 +2,7 @@ package pantanal.dev.colaboreja.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import pantanal.dev.colaboreja.DTO.AuthenticationDTO;
 import pantanal.dev.colaboreja.DTO.response.AuthenticationResponse;
@@ -25,7 +26,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterDTO request
+            @Valid @RequestBody RegisterDTO request
     ) {
         return ResponseEntity.ok(service.register(request));
     }
