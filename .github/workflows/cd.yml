@@ -10,8 +10,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: List Files in Current Directory
-        run: ls
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -30,6 +28,8 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/colabore-ja-api-pantanaldev-app:latest
+      - name: List Files in Current Directory
+        run: ls
       -
         name: Set up Docker Compose
         run: |
