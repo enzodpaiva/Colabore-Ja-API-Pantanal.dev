@@ -24,7 +24,7 @@ jobs:
       - name: Set up Docker Compose
         run: |
           docker-compose up -d --build
-        working-directory: ./docker-compose.yml
+        working-directory: ./
 
       - name: Run Maven Build
         run: mvn install
