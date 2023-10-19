@@ -1,5 +1,6 @@
 package pantanal.dev.colaboreja.controller;
 
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -62,6 +63,17 @@ public class ExceptionController {
                 .status(HttpStatus.CONFLICT)
                 .body(detalhes);
     }
+
+    @ExceptionHandler(io.jsonwebtoken.security.SignatureException.class)
+    public ResponseEntity<ErroResponse> handleSignatureException(SignatureException rnfe, HttpServletRequest request){
+
+        ErroResponse detalhes = new ErroResponse(rnfe.getMessage(), new Date().getTime());
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(detalhes);
+    }
+
 
 
 }
