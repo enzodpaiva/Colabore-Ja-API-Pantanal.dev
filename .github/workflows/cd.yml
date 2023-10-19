@@ -31,4 +31,4 @@ jobs:
         name: Set up Docker Compose
         run: |
           docker-compose -f docker-compose.yml up -d
-          working-directory: ./docker-compose.yml
+          working-directory: ./
