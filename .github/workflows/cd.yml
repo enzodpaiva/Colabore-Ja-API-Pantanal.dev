@@ -28,8 +28,10 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/colabore-ja-api-pantanaldev-app:latest
+      - name: List Files in Current Directory
+        run: ls
       -
         name: Set up Docker Compose
         run: |
-          docker-compose -f ./docker-compose.yml up -d
+          docker-compose -f docker-compose.yml up -d
         working-directory: ./
