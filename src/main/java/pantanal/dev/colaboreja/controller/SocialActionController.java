@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/social-action")
+@RequestMapping("/api/social-action")
 public class SocialActionController {
 
     @Autowired
@@ -33,17 +33,6 @@ public class SocialActionController {
                 .initDateTime(socialAction.getInitDateTime())
                 .finishDateTime(socialAction.getFinishDateTime())
                 .socialActionCategoryId(socialAction.getSocialActionCategoryId().getId())
-                .build();
-    }
-
-    private SocialActionModel convertToEntity(SocialActionDTO socialAction) {
-        return SocialActionModel.builder()
-                .id(socialAction.getId())
-                .name(socialAction.getName())
-                .description(socialAction.getDescription())
-                .initDateTime(socialAction.getInitDateTime())
-                .finishDateTime(socialAction.getFinishDateTime())
-//                .socialActionCategoryId(socialAction.getSocialActionCategoryId())
                 .build();
     }
 
