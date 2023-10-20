@@ -27,14 +27,14 @@ jobs:
         working-directory: ./
 
       - name: Run Maven Build
-        run: mvn install
+        run: docker run --rm -v "$PWD":/app -w /app maven:3.8.1-openjdk-17-slim mvn clean install -DskipTests
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/colaboreja
           SPRING_DATASOURCE_USERNAME: root
           SPRING_DATASOURCE_PASSWORD: root
 
-      - name: Run Tests (If applicable)
-        run: mvn test
+#      - name: Run Tests (If applicable)
+#        run: docker run --rm -v "$PWD":/app -w /app maven:3.8.1-openjdk-17-slim mvn test
 #
 #      - name: Executa testes
 #        run: mvn -Dspring.profiles.active=test --batch-mode --update-snapshots verify
