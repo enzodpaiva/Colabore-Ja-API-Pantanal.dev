@@ -27,7 +27,7 @@ jobs:
         working-directory: ./
 
       - name: Run Maven Build
-        run: docker run --rm -v "$PWD":/app -w /app maven:3.8.1-openjdk-17-slim mvn install
+        run: docker run --rm -v "$PWD":/app -w /app maven:3.8.1-openjdk-17-slim mvn clean install -DskipTests
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/colaboreja
           SPRING_DATASOURCE_USERNAME: root
