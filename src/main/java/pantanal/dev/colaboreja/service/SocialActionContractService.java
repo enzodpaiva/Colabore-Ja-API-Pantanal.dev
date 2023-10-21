@@ -85,4 +85,8 @@ public class SocialActionContractService {
                 .statusContract(SocialActionContractStatusEnum.fromString(socialActionContractDTO.getStatusContract()))
                 .build();
     }
+
+//    public SocialActionContractModel saveContractUser(String idContract) {
+//
+//    }
 }
