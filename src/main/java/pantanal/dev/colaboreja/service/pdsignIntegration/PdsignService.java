@@ -1,5 +1,6 @@
 package pantanal.dev.colaboreja.service.pdsignIntegration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -7,13 +8,16 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.client.RestTemplate;
 import pantanal.dev.colaboreja.DTO.pdsignIntegration.ProcessPdsignDTO;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.ActionTypeEnum;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.AuthenticationTypeEnum;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.CompanyEnum;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.ResponsibilityEnum;
+import pantanal.dev.colaboreja.model.SocialActionContractModel;
+import pantanal.dev.colaboreja.service.SocialActionContractService;
+import pantanal.dev.colaboreja.service.SocialActionService;
+import pantanal.dev.colaboreja.service.UserService;
 
 import java.util.Collections;
 import java.util.Map;
@@ -27,6 +31,15 @@ public class PdsignService {
 
     @Value("${application.pdsign.url}")
     private String url;
+
+    @Autowired
+    private SocialActionService socialActionService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SocialActionContractService socialActionContractService;
 
     public String getTokenPdSign() {
         HttpHeaders headers = new HttpHeaders();
@@ -92,9 +105,13 @@ public class PdsignService {
         }
     }
 
-    public Map<String, Object> createProcessPdSign(ProcessPdsignDTO processPdsignDTO) {
+    public Object createProcessPdSign(ProcessPdsignDTO processPdsignDTO) {
 
         var token = this.getTokenPdSign();
+//        UserModel colaborator = this.userService.getUserById(processPdsignDTO.getColaborator()).get();
+//        SocialActionModel socialAction = this.socialActionService.getSocialActionById(processPdsignDTO.getSocialAction()).get();
+//        SocialActionContractModel socialActionContract = this.socialActionContractService.findContractByUserAndSocialAction(colaborator.getId(), socialAction.getId());
+        SocialActionContractModel socialActionContract = this.socialActionContractService.findContractByUserAndSocialAction(processPdsignDTO.getColaborator(), processPdsignDTO.getSocialAction());
 
         this.transformMapValues(processPdsignDTO.getCompany(), CompanyEnum::getIdFromName);
         processPdsignDTO.getMembers().stream().forEach(member -> {
@@ -124,8 +141,9 @@ public class PdsignService {
         );
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
+
             Map<String, Object> responseBody = responseEntity.getBody();
-            return responseBody;
+            return this.socialActionContractService.saveProcessColaborator(responseBody.get("id").toString(), socialActionContract);
         } else {
             // Lide com as respostas não bem-sucedidas aqui, se necessário
             return Collections.emptyMap();

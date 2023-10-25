@@ -43,7 +43,7 @@ public class PdsginController {
         try {
             var document = this.service.createProcessPdSign(processPdsignDTO);
 
-            ApiResponse response = new ApiResponse(true, "Documento obtido com sucesso", document);
+            ApiResponse response = new ApiResponse(true, "Process criado com sucesso", document);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
             throw ex;

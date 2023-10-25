@@ -30,4 +30,10 @@ public class ProcessPdsignDTO {
     @Valid
     @NotNull(message = "O flow é obrigatorio")
     private FlowProcessDTO flow;
+
+    @NotNull(message = "A ação social é obrigatoria")
+    private Long socialAction;
+
+    @NotNull(message = "O colaborador é obrigatório")
+    private Integer colaborator;
 }

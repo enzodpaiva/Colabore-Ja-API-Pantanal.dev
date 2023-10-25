@@ -33,6 +33,8 @@ public class SocialActionController {
                 .initDateTime(socialAction.getInitDateTime())
                 .finishDateTime(socialAction.getFinishDateTime())
                 .socialActionCategoryId(socialAction.getSocialActionCategoryId().getId())
+                .author(socialAction.getAuthor().getId())
+                .location(socialAction.getLocation())
                 .build();
     }
 

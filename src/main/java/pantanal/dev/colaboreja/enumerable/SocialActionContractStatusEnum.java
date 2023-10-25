@@ -1,9 +1,16 @@
 package pantanal.dev.colaboreja.enumerable;
 
 public enum SocialActionContractStatusEnum {
-    IMAX("IMAX"),
-    _3D("3D"),
-    _2D("2D");
+
+    INTERESTED("INTERESTED"),
+    DRAFTED("DRAFTED"),
+    CREATED("CREATED"),
+    PENDIND("PENDIND"),
+    CANCELED("CANCELED"),
+    DONE("DONE"),
+    REJECTED("REJECTED"),
+    EXPIRATED("EXPIRATED"),
+    EXPIRED("EXPIRED");
 
     public final String label;
 
