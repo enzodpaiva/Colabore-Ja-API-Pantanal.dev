@@ -10,6 +10,7 @@ public enum SocialActionContractStatusEnum {
     DONE("DONE"),
     REJECTED("REJECTED"),
     EXPIRATED("EXPIRATED"),
+    RUNNING("RUNNING"),
     EXPIRED("EXPIRED");
 
     public final String label;

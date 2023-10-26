@@ -18,5 +18,7 @@ public interface SocialActionContractRepository extends JpaRepository<SocialActi
 
     public Optional<SocialActionContractModel> findByColaboratorIdAndSocialActionIdId(Integer colaborator, Long socialAction);
 
+    List<SocialActionContractModel> findByStatusContract(SocialActionContractStatusEnum statusContract);
+
 
 }

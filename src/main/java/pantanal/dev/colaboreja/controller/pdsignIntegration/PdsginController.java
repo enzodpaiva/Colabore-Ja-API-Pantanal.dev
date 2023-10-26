@@ -14,10 +14,12 @@ public class PdsginController {
     @Autowired
     private PdsignService service;
 
-    @GetMapping("/get-status-document")
-    public ResponseEntity<?> getStatusDocumentPdsign() {
+    @GetMapping("/get-status-document/{idProcess}")
+    public ResponseEntity<?> getStatusDocumentPdsign(
+            @PathVariable(value = "id", required = true) String idProcess
+    ) {
         try {
-            var token = this.service.getStatusDocumentPdSign("960a48d1-2372-458c-9b52-5e9ec724fce4");
+            var token = this.service.getStatusDocumentPdSign(idProcess);
 
             ApiResponse response = new ApiResponse(true, "Token resgatado", token);
             return ResponseEntity.ok(response);
@@ -26,10 +28,12 @@ public class PdsginController {
         }
     }
 
-    @GetMapping("/get-document")
-    public ResponseEntity<?> getDocumentPdsign() {
+    @GetMapping("/get-document/{idProcess}/{idDocument}")
+    public ResponseEntity<?> getDocumentPdsign(
+            @PathVariable String idProcess, String idDocument
+    ) {
         try {
-            var document = this.service.getDocumentPdSign("960a48d1-2372-458c-9b52-5e9ec724fce4", "0a8def1a-9c08-4429-bf03-9729031d34ea");
+            var document = this.service.getDocumentPdSign(idProcess, idDocument);
 
             ApiResponse response = new ApiResponse(true, "Documento obtido com sucesso", document);
             return ResponseEntity.ok(response);
@@ -38,10 +42,27 @@ public class PdsginController {
         }
     }
 
-    @PostMapping("/create-process")
-    public ResponseEntity<?> createProcessPdsign(@Valid @RequestBody ProcessPdsignDTO processPdsignDTO) {
+    @PostMapping("/create-process/{colaboratorId}/{socialActionId}")
+    public ResponseEntity<?> createProcessPdsign(
+            @PathVariable Integer colaboratorId, @PathVariable Long socialActionId,
+            @Valid @RequestBody ProcessPdsignDTO processPdsignDTO) {
         try {
-            var document = this.service.createProcessPdSign(processPdsignDTO);
+            var document = this.service.createProcessPdSign(processPdsignDTO, colaboratorId,  socialActionId);
+
+            ApiResponse response = new ApiResponse(true, "Process criado com sucesso", document);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    @PutMapping("/update-process-status/{idProcess}")
+    public ResponseEntity<?> updateProcessStatusPdsign(
+            @PathVariable String idProcess, @PathVariable Integer colaboratorId, @PathVariable Long socialActionId,
+            @Valid @RequestBody ProcessPdsignDTO processPdsignDTO
+    ) {
+        try {
+            var document = this.service.updateProcessStatusPdSign(idProcess, colaboratorId, socialActionId, processPdsignDTO);
 
             ApiResponse response = new ApiResponse(true, "Process criado com sucesso", document);
             return ResponseEntity.ok(response);

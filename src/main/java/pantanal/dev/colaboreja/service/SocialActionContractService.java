@@ -1,11 +1,11 @@
 package pantanal.dev.colaboreja.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import pantanal.dev.colaboreja.DTO.SocialActionContractDTO;
+import pantanal.dev.colaboreja.enumerable.SocialActionContractStatusEnum;
 import pantanal.dev.colaboreja.model.SocialActionContractModel;
-import pantanal.dev.colaboreja.model.SocialActionModel;
-import pantanal.dev.colaboreja.model.UserModel;
 import pantanal.dev.colaboreja.repository.SocialActionContractRepository;
 
 import java.util.List;
@@ -63,6 +63,14 @@ public class SocialActionContractService {
             throw new NoSuchElementException("Contrato de ação social com o ID de colaborador ou ação social especificado não foi encontrado");
         }
 
+        if (!result.get().getKeyProcess().isEmpty()) {
+            throw new DuplicateKeyException("Contrato de ação social Já possui um processo atrelado. Não é possivel criar outro.");
+        }
+
+        if (!result.get().getKeyDocument().isEmpty()) {
+            throw new DuplicateKeyException("Contrato de ação social Já possui um documento atrelado. Não é possivel criar outro.");
+        }
+
         return result.get();
     }
 
@@ -102,7 +110,47 @@ public class SocialActionContractService {
     public SocialActionContractModel saveProcessColaborator(String idProcess, SocialActionContractModel socialActionContract) {
 
         socialActionContract.setKeyProcess(idProcess);
+        socialActionContract.setStatusContract(SocialActionContractStatusEnum.DRAFTED);
+
+        this.socialActionContractRepository.save(socialActionContract);
+
+        return socialActionContract;
+    }
+
+    public SocialActionContractDTO saveDocumentColaborator(String idDocument, SocialActionContractModel socialActionContract) {
+
+        socialActionContract.setKeyDocument(idDocument);
+
+        this.socialActionContractRepository.save(socialActionContract);
+
+        return convertToDTO(socialActionContract);
+    }
+    public SocialActionContractModel updateStatusProcessColaborator(SocialActionContractModel socialActionContract) {
+
+        socialActionContract.setStatusContract(SocialActionContractStatusEnum.RUNNING);
 
         return this.socialActionContractRepository.save(socialActionContract);
+    }
+
+    public List<SocialActionContractModel> getRunningKeyProcesses() {
+        List<SocialActionContractModel> runningContracts = this.socialActionContractRepository.findByStatusContract(SocialActionContractStatusEnum.RUNNING);
+
+//        List<String> runningKeyProcesses = new ArrayList<>();
+//        for (SocialActionContractModel contract : runningContracts) {
+//            runningKeyProcesses.add(contract.getKeyProcess());
+//        }
+
+        return runningContracts;
+    }
+
+    private SocialActionContractDTO convertToDTO(SocialActionContractModel socialActionContractModel) {
+        return SocialActionContractDTO.builder()
+                .id(socialActionContractModel.getId())
+                .keyProcess(socialActionContractModel.getKeyProcess())
+                .keyDocument(socialActionContractModel.getKeyDocument())
+                .statusContract(socialActionContractModel.getStatusContract())
+                .socialActionId(socialActionContractModel.getSocialActionId().getId())
+                .colaborator(socialActionContractModel.getColaborator().getId())
+                .build();
     }
 }

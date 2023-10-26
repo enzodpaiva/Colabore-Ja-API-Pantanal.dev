@@ -9,16 +9,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import pantanal.dev.colaboreja.DTO.SocialActionContractDTO;
+import pantanal.dev.colaboreja.DTO.pdsignIntegration.DocumentPdsignDTO;
 import pantanal.dev.colaboreja.DTO.pdsignIntegration.ProcessPdsignDTO;
+//import pantanal.dev.colaboreja.DTO.pdsignIntegration.UploadProcessDocumentPdsignDTO;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.ActionTypeEnum;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.AuthenticationTypeEnum;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.CompanyEnum;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.ResponsibilityEnum;
 import pantanal.dev.colaboreja.model.SocialActionContractModel;
+import pantanal.dev.colaboreja.model.SocialActionModel;
+import pantanal.dev.colaboreja.model.UserModel;
 import pantanal.dev.colaboreja.service.SocialActionContractService;
 import pantanal.dev.colaboreja.service.SocialActionService;
 import pantanal.dev.colaboreja.service.UserService;
+//import pantanal.dev.colaboreja.util.PdfGenerate;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
@@ -56,7 +63,7 @@ public class PdsignService {
         return new RestTemplate().postForEntity(this.urlAuth, request, Map.class).getBody().get("access_token").toString();
     }
 
-    public Map<String, Object> getStatusDocumentPdSign(String idProcess) {
+    public String getStatusDocumentPdSign(String keyProcess) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -67,7 +74,7 @@ public class PdsignService {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
         ResponseEntity<Map> responseEntity = new RestTemplate().exchange(
-                this.url + "/processes/" + idProcess,
+                this.url + "/processes/" + keyProcess,
                 HttpMethod.GET,
                 requestEntity,
                 Map.class
@@ -75,10 +82,16 @@ public class PdsignService {
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Map<String, Object> responseBody = responseEntity.getBody();
-            return responseBody;
+            // Verifique se o campo "id" está presente no mapa antes de acessá-lo
+            if (responseBody.containsKey("status")) {
+                return responseBody.get("status").toString();
+            } else {
+                // Campo "id" não encontrado na resposta
+                return "Campo 'status' não encontrado na resposta.";
+            }
         } else {
             // Lide com as respostas não bem-sucedidas aqui, se necessário
-            return Collections.emptyMap();
+            return "Requisição não foi bem-sucedida. Código de status: " + responseEntity.getStatusCodeValue();
         }
     }
 
@@ -105,13 +118,12 @@ public class PdsignService {
         }
     }
 
-    public Object createProcessPdSign(ProcessPdsignDTO processPdsignDTO) {
+    public Object createProcessPdSign(ProcessPdsignDTO processPdsignDTO, Integer colaboratorId, Long socialActionId) {
 
         var token = this.getTokenPdSign();
-//        UserModel colaborator = this.userService.getUserById(processPdsignDTO.getColaborator()).get();
-//        SocialActionModel socialAction = this.socialActionService.getSocialActionById(processPdsignDTO.getSocialAction()).get();
-//        SocialActionContractModel socialActionContract = this.socialActionContractService.findContractByUserAndSocialAction(colaborator.getId(), socialAction.getId());
-        SocialActionContractModel socialActionContract = this.socialActionContractService.findContractByUserAndSocialAction(processPdsignDTO.getColaborator(), processPdsignDTO.getSocialAction());
+        UserModel colaborator = this.userService.getUserById(colaboratorId).get();
+        SocialActionModel socialAction = this.socialActionService.getSocialActionById(socialActionId).get();
+        SocialActionContractModel socialActionContract = this.socialActionContractService.findContractByUserAndSocialAction(colaborator.getId(), socialAction.getId());
 
         this.transformMapValues(processPdsignDTO.getCompany(), CompanyEnum::getIdFromName);
         processPdsignDTO.getMembers().stream().forEach(member -> {
@@ -129,8 +141,6 @@ public class PdsignService {
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.add("Authorization", "Bearer " + token);
 
-//        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-
         HttpEntity<ProcessPdsignDTO> requestEntity = new HttpEntity<>(processPdsignDTO, headers);
 
         ResponseEntity<Map> responseEntity = new RestTemplate().exchange(
@@ -143,7 +153,120 @@ public class PdsignService {
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
 
             Map<String, Object> responseBody = responseEntity.getBody();
-            return this.socialActionContractService.saveProcessColaborator(responseBody.get("id").toString(), socialActionContract);
+            socialActionContract = this.socialActionContractService.saveProcessColaborator(responseBody.get("id").toString(), socialActionContract);
+
+            SocialActionContractDTO result = this.createDocumentPdSign(socialActionContract, token);
+
+            return result;
+        } else {
+            // Lide com as respostas não bem-sucedidas aqui, se necessário
+            return Collections.emptyMap();
+        }
+    }
+    public SocialActionContractDTO createDocumentPdSign(SocialActionContractModel socialActionContract, String token) {
+
+        DocumentPdsignDTO documentPdsignDTO = new DocumentPdsignDTO(
+                "PDF",
+                "false",
+                socialActionContract.getColaborator().getFirstname() + "-" + socialActionContract.getColaborator().getLastname() + "_" + socialActionContract.getSocialActionId().getName() + "_" + socialActionContract.getSocialActionId().getInitDateTime().toString() + ".pdf",
+                "0",
+                "SIGN"
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", "Bearer " + token);
+
+        HttpEntity<DocumentPdsignDTO> requestEntity = new HttpEntity<>(documentPdsignDTO, headers);
+
+        ResponseEntity<Map> responseEntity = new RestTemplate().exchange(
+                this.url + "/processes/" + socialActionContract.getKeyProcess() + "/documents",
+                HttpMethod.POST,
+                requestEntity,
+                Map.class
+        );
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+
+            Map<String, Object> responseBody = responseEntity.getBody();
+            var result = this.socialActionContractService.saveDocumentColaborator(responseBody.get("id").toString(), socialActionContract);
+            return result;
+        } else {
+            // Lide com as respostas não bem-sucedidas aqui, se necessário
+            return (SocialActionContractDTO) Collections.emptyMap();
+        }
+    }
+
+//    public SocialActionContractDTO sendProcessDocumentPdSign(SocialActionContractModel socialActionContract, String token) {
+//
+//        PdfGenerate pdf = new PdfGenerate();
+//        UploadProcessDocumentPdsignDTO uploadProcessDocumentPdsignDTO = new UploadProcessDocumentPdsignDTO(
+//                pdf
+//        );
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
+//        headers.add("Authorization", "Bearer " + token);
+//
+//        HttpEntity<UploadProcessDocumentPdsignDTO> requestEntity = new HttpEntity<>(uploadProcessDocumentPdsignDTO, headers);
+//
+//        ResponseEntity<Map> responseEntity = new RestTemplate().exchange(
+//                this.url + "/processes/" + socialActionContract.getKeyProcess() + "/documents/" + socialActionContract.getKeyDocument() + "/upload",
+//                HttpMethod.POST,
+//                requestEntity,
+//                Map.class
+//        );
+//
+//        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+//
+//            Map<String, Object> responseBody = responseEntity.getBody();
+//            var result = this.socialActionContractService.saveDocumentColaborator(responseBody.get("id").toString(), socialActionContract);
+//            return result;
+//        } else {
+//            // Lide com as respostas não bem-sucedidas aqui, se necessário
+//            return (SocialActionContractDTO) Collections.emptyMap();
+//        }
+//    }
+
+       public Object updateProcessStatusPdSign(String idProcess, Integer colaboratorId, Long socialActionId, ProcessPdsignDTO processPdsignDTO) {
+
+        var token = this.getTokenPdSign();
+        UserModel colaborator = this.userService.getUserById(colaboratorId).get();
+        SocialActionModel socialAction = this.socialActionService.getSocialActionById(socialActionId).get();
+        SocialActionContractModel socialActionContract = this.socialActionContractService.findContractByUserAndSocialAction(colaborator.getId(), socialAction.getId());
+
+        this.transformMapValues(processPdsignDTO.getCompany(), CompanyEnum::getIdFromName);
+        processPdsignDTO.getMembers().stream().forEach(member -> {
+            this.transformMapValues(member.getActionType(), ActionTypeEnum::getIdFromName);
+            this.transformMapValues(member.getResponsibility(), ResponsibilityEnum::getIdFromName);
+            this.transformMapValues(member.getAuthenticationType(), AuthenticationTypeEnum::getIdFromName);
+
+            member.getRepresentation().getCompanies().stream().forEach(company -> {
+                this.transformMapValues(company, CompanyEnum::getIdFromName);
+            });
+        });
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", "Bearer " + token);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("status", "RUNNING");
+
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Map> responseEntity = new RestTemplate().exchange(
+                this.url + "/processes/" + idProcess,
+                HttpMethod.PATCH,
+                requestEntity,
+                Map.class
+        );
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+
+            return this.socialActionContractService.updateStatusProcessColaborator(socialActionContract);
         } else {
             // Lide com as respostas não bem-sucedidas aqui, se necessário
             return Collections.emptyMap();
