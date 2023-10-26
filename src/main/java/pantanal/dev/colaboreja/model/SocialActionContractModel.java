@@ -32,6 +32,10 @@ public class SocialActionContractModel {
     @Enumerated(EnumType.STRING)
     private SocialActionContractStatusEnum statusContract;
 
+    @Basic
+    @Column(length = 255, nullable = true)
+    private String codeDocumentPdsign;
+
     @ManyToOne
 //    @JoinColumn(name = "social_action_id")
     private SocialActionModel socialActionId;

@@ -11,6 +11,7 @@ public enum SocialActionContractStatusEnum {
     REJECTED("REJECTED"),
     EXPIRATED("EXPIRATED"),
     RUNNING("RUNNING"),
+    PROCESSING("PROCESSING"),
     EXPIRED("EXPIRED");
 
     public final String label;

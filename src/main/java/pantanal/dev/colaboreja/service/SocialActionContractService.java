@@ -117,28 +117,27 @@ public class SocialActionContractService {
         return socialActionContract;
     }
 
-    public SocialActionContractDTO saveDocumentColaborator(String idDocument, SocialActionContractModel socialActionContract) {
+    public SocialActionContractModel saveDocumentColaborator(String idDocument, SocialActionContractModel socialActionContract) {
 
         socialActionContract.setKeyDocument(idDocument);
 
         this.socialActionContractRepository.save(socialActionContract);
 
-        return convertToDTO(socialActionContract);
+        return socialActionContract;
     }
-    public SocialActionContractModel updateStatusProcessColaborator(SocialActionContractModel socialActionContract) {
+
+    public SocialActionContractDTO updateStatusProcessColaborator(SocialActionContractModel socialActionContract, String codeDocumentPdsign) {
 
         socialActionContract.setStatusContract(SocialActionContractStatusEnum.RUNNING);
+        socialActionContract.setCodeDocumentPdsign(codeDocumentPdsign);
 
-        return this.socialActionContractRepository.save(socialActionContract);
+        this.socialActionContractRepository.save(socialActionContract);
+
+        return convertToDTO(socialActionContract);
     }
 
     public List<SocialActionContractModel> getRunningKeyProcesses() {
         List<SocialActionContractModel> runningContracts = this.socialActionContractRepository.findByStatusContract(SocialActionContractStatusEnum.RUNNING);
-
-//        List<String> runningKeyProcesses = new ArrayList<>();
-//        for (SocialActionContractModel contract : runningContracts) {
-//            runningKeyProcesses.add(contract.getKeyProcess());
-//        }
 
         return runningContracts;
     }
@@ -151,6 +150,7 @@ public class SocialActionContractService {
                 .statusContract(socialActionContractModel.getStatusContract())
                 .socialActionId(socialActionContractModel.getSocialActionId().getId())
                 .colaborator(socialActionContractModel.getColaborator().getId())
+                .codeDocumentPdsign(socialActionContractModel.getCodeDocumentPdsign())
                 .build();
     }
 }

@@ -14,19 +14,18 @@ import pantanal.dev.colaboreja.service.pdsignIntegration.PdsignService;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 @Component
-public class VerifyStatusContractTask {
+public class UpdateStatusContractTask {
 
-    private static final Logger log = LoggerFactory.getLogger(VerifyStatusContractTask.class);
+    private static final Logger log = LoggerFactory.getLogger(UpdateStatusContractTask.class);
 
     private final SocialActionContractService contractService;
     private final PdsignService pdsignService;
     private final SocialActionContractRepository socialActionContractRepository;
 
     @Autowired
-    public VerifyStatusContractTask(SocialActionContractService contractService, PdsignService pdsignService, SocialActionContractRepository socialActionContractRepository) {
+    public UpdateStatusContractTask(SocialActionContractService contractService, PdsignService pdsignService, SocialActionContractRepository socialActionContractRepository) {
         this.contractService = contractService;
         this.pdsignService = pdsignService;
         this.socialActionContractRepository = socialActionContractRepository;

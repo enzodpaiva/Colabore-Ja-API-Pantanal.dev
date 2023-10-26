@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pantanal.dev.colaboreja.DTO.pdsignIntegration.ProcessPdsignDTO;
 import pantanal.dev.colaboreja.service.pdsignIntegration.PdsignService;
+import pantanal.dev.colaboreja.task.UpdateStatusContractTask;
 import pantanal.dev.colaboreja.util.ApiResponse;
 
 @RestController
@@ -13,6 +14,9 @@ import pantanal.dev.colaboreja.util.ApiResponse;
 public class PdsginController {
     @Autowired
     private PdsignService service;
+
+    @Autowired
+    private UpdateStatusContractTask updateStatusContractTask; // Inject the task bean
 
     @GetMapping("/get-status-document/{idProcess}")
     public ResponseEntity<?> getStatusDocumentPdsign(
@@ -56,18 +60,13 @@ public class PdsginController {
         }
     }
 
-    @PutMapping("/update-process-status/{idProcess}")
-    public ResponseEntity<?> updateProcessStatusPdsign(
-            @PathVariable String idProcess, @PathVariable Integer colaboratorId, @PathVariable Long socialActionId,
-            @Valid @RequestBody ProcessPdsignDTO processPdsignDTO
-    ) {
-        try {
-            var document = this.service.updateProcessStatusPdSign(idProcess, colaboratorId, socialActionId, processPdsignDTO);
-
-            ApiResponse response = new ApiResponse(true, "Process criado com sucesso", document);
-            return ResponseEntity.ok(response);
-        } catch (Exception ex) {
-            throw ex;
-        }
-    }
+//    @PostMapping("/test-schedule")
+//    public void testSchedule(
+//    ) {
+//        try {
+//            updateStatusContractTask.manualVerifyStatusContractTaskExecution();
+//        } catch (Exception ex) {
+//            throw ex;
+//        }
+//    }
 }

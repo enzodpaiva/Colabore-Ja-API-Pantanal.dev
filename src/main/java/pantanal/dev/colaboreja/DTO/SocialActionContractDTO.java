@@ -35,4 +35,7 @@ public class SocialActionContractDTO {
     @NotNull(message = "O colaborador é obrigatório")
     private Integer colaborator;
 
+    @Nullable
+    private String codeDocumentPdsign;
+
 }

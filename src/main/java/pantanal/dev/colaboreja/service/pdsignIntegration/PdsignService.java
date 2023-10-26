@@ -2,17 +2,20 @@ package pantanal.dev.colaboreja.service.pdsignIntegration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import pantanal.dev.colaboreja.DTO.SocialActionContractDTO;
 import pantanal.dev.colaboreja.DTO.pdsignIntegration.DocumentPdsignDTO;
 import pantanal.dev.colaboreja.DTO.pdsignIntegration.ProcessPdsignDTO;
-//import pantanal.dev.colaboreja.DTO.pdsignIntegration.UploadProcessDocumentPdsignDTO;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.ActionTypeEnum;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.AuthenticationTypeEnum;
 import pantanal.dev.colaboreja.enumerable.pdsignIntegration.CompanyEnum;
@@ -23,7 +26,7 @@ import pantanal.dev.colaboreja.model.UserModel;
 import pantanal.dev.colaboreja.service.SocialActionContractService;
 import pantanal.dev.colaboreja.service.SocialActionService;
 import pantanal.dev.colaboreja.service.UserService;
-//import pantanal.dev.colaboreja.util.PdfGenerate;
+import pantanal.dev.colaboreja.util.PdfGenerate;
 
 import java.io.File;
 import java.util.Collections;
@@ -86,11 +89,9 @@ public class PdsignService {
             if (responseBody.containsKey("status")) {
                 return responseBody.get("status").toString();
             } else {
-                // Campo "id" não encontrado na resposta
                 return "Campo 'status' não encontrado na resposta.";
             }
         } else {
-            // Lide com as respostas não bem-sucedidas aqui, se necessário
             return "Requisição não foi bem-sucedida. Código de status: " + responseEntity.getStatusCodeValue();
         }
     }
@@ -113,12 +114,11 @@ public class PdsignService {
             ByteArrayResource resource = new ByteArrayResource(responseBody);
             return resource;
         } else {
-            // Lide com as respostas não bem-sucedidas aqui, se necessário
             return null;
         }
     }
 
-    public Object createProcessPdSign(ProcessPdsignDTO processPdsignDTO, Integer colaboratorId, Long socialActionId) {
+    public SocialActionContractDTO createProcessPdSign(ProcessPdsignDTO processPdsignDTO, Integer colaboratorId, Long socialActionId) {
 
         var token = this.getTokenPdSign();
         UserModel colaborator = this.userService.getUserById(colaboratorId).get();
@@ -159,8 +159,7 @@ public class PdsignService {
 
             return result;
         } else {
-            // Lide com as respostas não bem-sucedidas aqui, se necessário
-            return Collections.emptyMap();
+            return (SocialActionContractDTO) Collections.emptyMap();
         }
     }
     public SocialActionContractDTO createDocumentPdSign(SocialActionContractModel socialActionContract, String token) {
@@ -190,86 +189,73 @@ public class PdsignService {
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
 
             Map<String, Object> responseBody = responseEntity.getBody();
-            var result = this.socialActionContractService.saveDocumentColaborator(responseBody.get("id").toString(), socialActionContract);
-            return result;
+            socialActionContract = this.socialActionContractService.saveDocumentColaborator(responseBody.get("id").toString(), socialActionContract);
+
+            SocialActionContractDTO socialActionContractDTO = this.sendProcessDocumentPdSign(socialActionContract, token);
+            return socialActionContractDTO;
         } else {
-            // Lide com as respostas não bem-sucedidas aqui, se necessário
             return (SocialActionContractDTO) Collections.emptyMap();
         }
     }
 
-//    public SocialActionContractDTO sendProcessDocumentPdSign(SocialActionContractModel socialActionContract, String token) {
-//
-//        PdfGenerate pdf = new PdfGenerate();
-//        UploadProcessDocumentPdsignDTO uploadProcessDocumentPdsignDTO = new UploadProcessDocumentPdsignDTO(
-//                pdf
-//        );
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
-//        headers.add("Authorization", "Bearer " + token);
-//
-//        HttpEntity<UploadProcessDocumentPdsignDTO> requestEntity = new HttpEntity<>(uploadProcessDocumentPdsignDTO, headers);
-//
-//        ResponseEntity<Map> responseEntity = new RestTemplate().exchange(
-//                this.url + "/processes/" + socialActionContract.getKeyProcess() + "/documents/" + socialActionContract.getKeyDocument() + "/upload",
-//                HttpMethod.POST,
-//                requestEntity,
-//                Map.class
-//        );
-//
-//        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-//
-//            Map<String, Object> responseBody = responseEntity.getBody();
-//            var result = this.socialActionContractService.saveDocumentColaborator(responseBody.get("id").toString(), socialActionContract);
-//            return result;
-//        } else {
-//            // Lide com as respostas não bem-sucedidas aqui, se necessário
-//            return (SocialActionContractDTO) Collections.emptyMap();
-//        }
-//    }
+    public SocialActionContractDTO sendProcessDocumentPdSign(SocialActionContractModel socialActionContract, String token) {
 
-       public Object updateProcessStatusPdSign(String idProcess, Integer colaboratorId, Long socialActionId, ProcessPdsignDTO processPdsignDTO) {
+        File pdf = PdfGenerate.main(null);
 
-        var token = this.getTokenPdSign();
-        UserModel colaborator = this.userService.getUserById(colaboratorId).get();
-        SocialActionModel socialAction = this.socialActionService.getSocialActionById(socialActionId).get();
-        SocialActionContractModel socialActionContract = this.socialActionContractService.findContractByUserAndSocialAction(colaborator.getId(), socialAction.getId());
-
-        this.transformMapValues(processPdsignDTO.getCompany(), CompanyEnum::getIdFromName);
-        processPdsignDTO.getMembers().stream().forEach(member -> {
-            this.transformMapValues(member.getActionType(), ActionTypeEnum::getIdFromName);
-            this.transformMapValues(member.getResponsibility(), ResponsibilityEnum::getIdFromName);
-            this.transformMapValues(member.getAuthenticationType(), AuthenticationTypeEnum::getIdFromName);
-
-            member.getRepresentation().getCompanies().stream().forEach(company -> {
-                this.transformMapValues(company, CompanyEnum::getIdFromName);
-            });
-        });
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", new FileSystemResource(pdf));
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
         headers.add("Authorization", "Bearer " + token);
 
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("status", "RUNNING");
-
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         ResponseEntity<Map> responseEntity = new RestTemplate().exchange(
-                this.url + "/processes/" + idProcess,
-                HttpMethod.PATCH,
+                this.url + "/processes/" + socialActionContract.getKeyProcess() + "/documents/" + socialActionContract.getKeyDocument() + "/upload",
+                HttpMethod.POST,
                 requestEntity,
                 Map.class
         );
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
 
-            return this.socialActionContractService.updateStatusProcessColaborator(socialActionContract);
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            SocialActionContractDTO socialActionContractDTO = this.authorizeForSignature(socialActionContract,token);
+            return socialActionContractDTO;
         } else {
             // Lide com as respostas não bem-sucedidas aqui, se necessário
-            return Collections.emptyMap();
+            return (SocialActionContractDTO) Collections.emptyMap();
+        }
+    }
+
+
+    private SocialActionContractDTO authorizeForSignature(SocialActionContractModel socialActionContract, String token) {
+        ParameterizedTypeReference<Map<String, Object>> responseType = new ParameterizedTypeReference<Map<String, Object>>() {};
+
+        Map<String, Object> responseBody = WebClient.builder()
+                .baseUrl(this.url)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build()
+                .patch()
+                .uri("/processes/{workItemID}", socialActionContract.getKeyProcess())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body(BodyInserters.fromValue(Map.of("status", "RUNNING")))
+                .retrieve()
+                .bodyToMono(responseType)
+                .block();
+
+        if (responseBody != null) {
+            String code = responseBody.get("code").toString();
+            SocialActionContractDTO socialActionContractDTO = this.socialActionContractService.updateStatusProcessColaborator(socialActionContract, code);
+            return socialActionContractDTO;
+        } else {
+            return (SocialActionContractDTO) Collections.emptyMap();
         }
     }
 
