@@ -32,6 +32,10 @@ public class UserModel implements UserDetails {
     private String email;
     private String password;
 
+    @Basic
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 

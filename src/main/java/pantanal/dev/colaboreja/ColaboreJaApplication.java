@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-//@EnableScheduling
+@EnableScheduling
 @ComponentScan(basePackages = "pantanal.dev.colaboreja")
 public class ColaboreJaApplication {
 

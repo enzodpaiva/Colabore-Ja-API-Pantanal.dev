@@ -1,51 +1,128 @@
 package pantanal.dev.colaboreja.util;
 
-import java.io.File;
-
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.property.TextAlignment;
+import pantanal.dev.colaboreja.model.SocialActionContractModel;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PdfGenerate {
-    public static File main(String[] args) {
-        // Caminho para o arquivo PDF que você deseja criar
-        String nomeArquivoPDF = "exemplo.pdf";
+    public static File createContractPDF(SocialActionContractModel socialActionContract) {
+        String fileName = generateFileName(socialActionContract);
 
-        // Dados para adicionar ao PDF
-        String nome = "João da Silva";
-        String email = "joao@example.com";
+        try (PdfDocument pdfDoc = new PdfDocument(new PdfWriter(fileName))) {
+            try (Document doc = new Document(pdfDoc, PageSize.A4)) {
+                // Add Header
+                addHeader(doc);
 
-        // Cria um novo documento PDF
-        try (PdfDocument pdfDoc = new PdfDocument(new PdfWriter(nomeArquivoPDF))) {
-            // Cria um novo documento
-            try (Document doc = new Document(pdfDoc)) {
-                // Adiciona um parágrafo com o nome
-                Paragraph nomeParagraph = new Paragraph();
-                nomeParagraph.add(new Text("Nome: " + nome));
-                doc.add(nomeParagraph);
+                // Add Contract Details
+                addContractDetails(doc, socialActionContract);
 
-                // Adiciona um parágrafo com o endereço de email
-                Paragraph emailParagraph = new Paragraph();
-                emailParagraph.add(new Text("Email: " + email));
-                doc.add(emailParagraph);
+                // Add Collaborator Details
+                addCollaboratorDetails(doc, socialActionContract);
+
+                // Add Social Action Details
+                addSocialActionDetails(doc, socialActionContract);
+
+                // Add Footer with Terms and Conditions
+                addFooter(doc);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        System.out.println("Documento PDF criado com sucesso!");
-
-        // Obtém o objeto File do arquivo PDF criado
-        File pdfFile = new File(nomeArquivoPDF);
+        File pdfFile = new File(fileName);
 
         if (pdfFile.exists()) {
-            System.out.println("Arquivo PDF criado: " + pdfFile.getAbsolutePath());
+            System.out.println("PDF file created: " + pdfFile.getAbsolutePath());
             return pdfFile;
         } else {
-            System.out.println("Não foi possível encontrar o arquivo PDF.");
+            System.out.println("Failed to create the PDF file.");
             return null;
         }
+    }
+
+    private static String generateFileName(SocialActionContractModel socialActionContract) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String timestamp = dateFormat.format(new Date());
+        return socialActionContract.getColaborator().getFirstname() + "-"
+                + socialActionContract.getColaborator().getLastname() + "_"
+                + socialActionContract.getSocialActionId().getName() + "_"
+                + timestamp + ".pdf";
+    }
+
+    private static void addHeader(Document doc) {
+        // Customize header content
+        doc.add(new Paragraph("Contract Header").setFontColor(ColorConstants.RED)
+                .setBold().setFontSize(16).setTextAlignment(TextAlignment.CENTER));
+        doc.add(new Paragraph("Company Name").setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
+        doc.add(new LineSeparator(new SolidLine()));
+    }
+
+    private static void addContractDetails(Document doc, SocialActionContractModel socialActionContract) {
+        doc.add(new Paragraph("Contract Details").setBold().setFontSize(14));
+        Table table = new Table(new float[]{1, 3});
+        table.useAllAvailableWidth();
+
+        table.addCell(new Cell().add(new Paragraph("Key Process:")));
+        table.addCell(new Cell().add(new Paragraph(socialActionContract.getKeyProcess())));
+
+        table.addCell(new Cell().add(new Paragraph("Key Document:")));
+        table.addCell(new Cell().add(new Paragraph(socialActionContract.getKeyDocument())));
+
+        doc.add(table);
+    }
+
+    private static void addCollaboratorDetails(Document doc, SocialActionContractModel socialActionContract) {
+        doc.add(new Paragraph("Collaborator Details").setBold().setFontSize(14));
+        Table table = new Table(new float[]{1, 3});
+        table.useAllAvailableWidth();
+
+        table.addCell(new Cell().add(new Paragraph("Name:")));
+        table.addCell(new Cell().add(new Paragraph(socialActionContract.getColaborator().getFirstname()
+                + " " + socialActionContract.getColaborator().getLastname())));
+
+        table.addCell(new Cell().add(new Paragraph("Email:")));
+        table.addCell(new Cell().add(new Paragraph(socialActionContract.getColaborator().getEmail())));
+
+        table.addCell(new Cell().add(new Paragraph("Description:")));
+        table.addCell(new Cell().add(new Paragraph(socialActionContract.getColaborator().getDescription())));
+
+        doc.add(table);
+    }
+
+    private static void addSocialActionDetails(Document doc, SocialActionContractModel socialActionContract) {
+        doc.add(new Paragraph("Social Action Details").setBold().setFontSize(14));
+        Table table = new Table(new float[]{1, 3});
+        table.useAllAvailableWidth();
+
+        table.addCell(new Cell().add(new Paragraph("Name:")));
+        table.addCell(new Cell().add(new Paragraph(socialActionContract.getSocialActionId().getName())));
+
+        table.addCell(new Cell().add(new Paragraph("Description:")));
+        table.addCell(new Cell().add(new Paragraph(socialActionContract.getSocialActionId().getDescription())));
+
+        // Add more details to the table as needed
+
+        doc.add(table);
+    }
+
+    private static void addFooter(Document doc) {
+        // Customize footer content
+        doc.add(new LineSeparator(new SolidLine()));
+        doc.add(new Paragraph("Terms and Conditions").setFontSize(10).setItalic().setTextAlignment(TextAlignment.CENTER));
+    }
+
+    public static void main(String[] args) {
+        SocialActionContractModel contract = new SocialActionContractModel(); // Replace with your contract data
+        createContractPDF(contract);
     }
 }

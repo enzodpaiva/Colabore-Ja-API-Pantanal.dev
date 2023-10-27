@@ -155,6 +155,12 @@ public class PdsignService {
             Map<String, Object> responseBody = responseEntity.getBody();
             socialActionContract = this.socialActionContractService.saveProcessColaborator(responseBody.get("id").toString(), socialActionContract);
 
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             SocialActionContractDTO result = this.createDocumentPdSign(socialActionContract, token);
 
             return result;
@@ -191,6 +197,12 @@ public class PdsignService {
             Map<String, Object> responseBody = responseEntity.getBody();
             socialActionContract = this.socialActionContractService.saveDocumentColaborator(responseBody.get("id").toString(), socialActionContract);
 
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             SocialActionContractDTO socialActionContractDTO = this.sendProcessDocumentPdSign(socialActionContract, token);
             return socialActionContractDTO;
         } else {
@@ -200,7 +212,7 @@ public class PdsignService {
 
     public SocialActionContractDTO sendProcessDocumentPdSign(SocialActionContractModel socialActionContract, String token) {
 
-        File pdf = PdfGenerate.main(null);
+        File pdf = PdfGenerate.createContractPDF(socialActionContract);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", new FileSystemResource(pdf));
