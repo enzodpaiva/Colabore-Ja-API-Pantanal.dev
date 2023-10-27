@@ -1,6 +1,8 @@
 package pantanal.dev.colaboreja.controller.pdsignIntegration;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import pantanal.dev.colaboreja.task.UpdateStatusContractTask;
 import pantanal.dev.colaboreja.util.ApiResponse;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
+import pantanal.dev.colaboreja.util.PdfGenerate;
 
 @RestController
 @RequestMapping("/api/integration/pdsign")
@@ -19,6 +22,8 @@ public class PdsginController {
 
     @Autowired
     private UpdateStatusContractTask updateStatusContractTask; // Inject the task bean
+
+    private static final Logger logger = LoggerFactory.getLogger(PdsginController.class);
 
 //    @GetMapping("/get-status-document/{idProcess}")
 //    public ResponseEntity<?> getStatusDocumentPdsign(
@@ -80,6 +85,7 @@ public class PdsginController {
             ApiResponse response = new ApiResponse(true, "Process criado com sucesso", document);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
+            logger.error("Ocorreu uma exceção ao criar o PDF", ex.getMessage());
             throw ex;
         }
     }
