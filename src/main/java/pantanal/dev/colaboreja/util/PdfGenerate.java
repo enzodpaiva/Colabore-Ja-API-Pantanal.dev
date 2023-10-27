@@ -49,7 +49,7 @@ public class PdfGenerate {
                 return null;
             }
         } catch (IOException e) {
-            logger.error("Ocorreu uma exceção ao criar o PDF", e);
+            logger.error("Ocorreu uma exceção ao criar o PDF", e.getMessage());
             return null;
         }
     }
@@ -65,9 +65,9 @@ public class PdfGenerate {
 
     private static void addHeader(Document doc) {
         // Customize header content
-        doc.add(new Paragraph("Contract Header").setFontColor(ColorConstants.RED)
+        doc.add(new Paragraph("Social Action Contract").setFontColor(ColorConstants.RED)
                 .setBold().setFontSize(16).setTextAlignment(TextAlignment.CENTER));
-        doc.add(new Paragraph("Company Name").setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
+        doc.add(new Paragraph("Colabore Já").setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
         doc.add(new LineSeparator(new SolidLine()));
     }
 
@@ -97,9 +97,6 @@ public class PdfGenerate {
         table.addCell(new Cell().add(new Paragraph("Email:")));
         table.addCell(new Cell().add(new Paragraph(socialActionContract.getColaborator().getEmail())));
 
-        table.addCell(new Cell().add(new Paragraph("Description:")));
-        table.addCell(new Cell().add(new Paragraph(socialActionContract.getColaborator().getDescription())));
-
         doc.add(table);
     }
 
@@ -122,11 +119,19 @@ public class PdfGenerate {
     private static void addFooter(Document doc) {
         // Customize footer content
         doc.add(new LineSeparator(new SolidLine()));
-        doc.add(new Paragraph("Terms and Conditions").setFontSize(10).setItalic().setTextAlignment(TextAlignment.CENTER));
+
+        // Add terms and conditions
+        doc.add(new Paragraph("Terms and Conditions").setBold().setFontSize(12).setTextAlignment(TextAlignment.CENTER));
+
+        String termsAndConditions = "By participating in this social action, you agree to the following terms and conditions:\n"
+                + "1. Participants must adhere to the rules and guidelines of the social action.\n"
+                + "2. Respect the rights and privacy of others.\n"
+                + "3. Any violation of the terms may result in disqualification from the social action.\n"
+                + "4. The organizers reserve the right to make changes to the terms and conditions.";
+
+        doc.add(new Paragraph(termsAndConditions).setFontSize(10));
+
+        // You can customize and add more content to the terms and conditions as needed.
     }
 
-    public static void main(String[] args) {
-        SocialActionContractModel contract = new SocialActionContractModel(); // Replace with your contract data
-        createContractPDF(contract);
-    }
 }
