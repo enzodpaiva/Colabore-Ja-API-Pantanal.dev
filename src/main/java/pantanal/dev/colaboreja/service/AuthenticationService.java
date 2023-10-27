@@ -1,12 +1,6 @@
 package pantanal.dev.colaboreja.service;
 
-// import com.alibou.security.config.JwtService;
-// import com.alibou.security.token.Token;
-// import com.alibou.security.token.TokenRepository;
-// import com.alibou.security.token.TokenType;
-// import com.alibou.security.user.Role;
-// import com.alibou.security.user.User;
-// import com.alibou.security.user.UserRepository;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

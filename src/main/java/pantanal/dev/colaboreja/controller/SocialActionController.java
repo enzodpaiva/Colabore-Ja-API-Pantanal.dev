@@ -49,7 +49,7 @@ public class SocialActionController {
         }
     }
 
-//    -- origens de request permitidas
+    //    -- origens de request permitidas
 //    @CrossOrigin(origins = {"http://localhost:8080", "https://www.google.com"} )
 //    -- cors personalizado por endpoint
     @GetMapping(path = "/{id}")
