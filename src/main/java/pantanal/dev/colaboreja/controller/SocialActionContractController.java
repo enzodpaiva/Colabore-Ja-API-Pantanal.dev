@@ -25,18 +25,20 @@ public class SocialActionContractController {
     private SocialActionContractDTO convertToDTO(SocialActionContractModel socialActionContractModel) {
         return SocialActionContractDTO.builder()
                 .id(socialActionContractModel.getId())
-                .keyContract(socialActionContractModel.getKeyContract())
-                .statusContract(Objects.toString(socialActionContractModel.getStatusContract(), null))
+                .keyProcess(socialActionContractModel.getKeyProcess())
+                .keyDocument(socialActionContractModel.getKeyDocument())
+                .statusContract(socialActionContractModel.getStatusContract())
                 .socialActionId(socialActionContractModel.getSocialActionId().getId())
+                .colaborator(socialActionContractModel.getColaborator().getId())
                 .build();
     }
 
     @GetMapping
     public Collection<SocialActionContractDTO> getAllSocialActionContract(
             @Parameter(description = "Nome da ação social")
-            @RequestParam(value = "name", required = false) String keyContract) {
+            @RequestParam(value = "name", required = false) String keyProcess) {
         try {
-            return this.service.findSocialActionContract(keyContract).stream().map(this::convertToDTO).collect(Collectors.toList());
+            return this.service.findSocialActionContract(keyProcess).stream().map(this::convertToDTO).collect(Collectors.toList());
         } catch (Exception ex) {
             throw ex;
         }

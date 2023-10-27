@@ -30,4 +30,5 @@ public class ProcessPdsignDTO {
     @Valid
     @NotNull(message = "O flow é obrigatorio")
     private FlowProcessDTO flow;
+
 }
