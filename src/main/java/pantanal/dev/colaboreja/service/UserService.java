@@ -3,6 +3,7 @@ package pantanal.dev.colaboreja.service;
 
 import lombok.RequiredArgsConstructor;
 import pantanal.dev.colaboreja.DTO.ChangePasswordDTO;
+import pantanal.dev.colaboreja.model.SocialActionCategoryModel;
 import pantanal.dev.colaboreja.model.UserModel;
 import pantanal.dev.colaboreja.repository.UserRepository;
 
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +39,16 @@ public class UserService {
 
         // Salva nova senha
         repository.save(user);
+    }
+
+    public Optional<UserModel> getUserById(Integer id) {
+
+        var result = this.repository.findById(id);
+
+        if (!result.isPresent()){
+            throw new NoSuchElementException("User com o ID especificado não foi encontrado");
+        }
+
+        return result;
     }
 }

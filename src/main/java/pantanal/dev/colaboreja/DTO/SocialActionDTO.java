@@ -33,5 +33,11 @@ public class SocialActionDTO {
     @NotNull(message = "A categoria da ação social é obrigatoria")
     private Long socialActionCategoryId;
 
+    @NotNull(message = "O autor é obrigatório")
+    private Integer author;
+
+    @NotBlank(message = "A localização é obrigatória")
+    private String location;
+
 
 }

@@ -1,42 +1,76 @@
-    package pantanal.dev.colaboreja.model;
+package pantanal.dev.colaboreja.model;
 
-    import jakarta.persistence.*;
-    import lombok.AllArgsConstructor;
-    import lombok.Builder;
-    import lombok.Data;
-    import lombok.NoArgsConstructor;
-    import pantanal.dev.colaboreja.enumerable.SocialActionContractStatusEnum;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import pantanal.dev.colaboreja.enumerable.SocialActionContractStatusEnum;
 
-    @Entity
-    @Table(name = "socialActionContracts")
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    @Builder
-    public class SocialActionContractModel {
+import java.util.Date;
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+@Entity
+@Table(name = "socialActionContracts")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class SocialActionContractModel {
 
-        @Basic
-        @Column(length = 255, nullable = true, unique = true)
-        private String keyContract;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @Column
-        @Enumerated(EnumType.STRING)
-        private SocialActionContractStatusEnum statusContract;
+    @Basic
+    @Column(length = 255, nullable = true)
+    private String keyProcess;
 
-        @ManyToOne
-        @JoinColumn(name = "social_action_id")
-        private SocialActionModel socialActionId;
+    @Basic
+    @Column(length = 255, nullable = true)
+    private String keyDocument;
 
-        public SocialActionModel getSocialActionId() {
-            return socialActionId;
-        }
+    @Column
+    @Enumerated(EnumType.STRING)
+    private SocialActionContractStatusEnum statusContract;
 
-        public void setSocialActionId(SocialActionModel socialActionId) {
-            this.socialActionId = socialActionId;
-        }
+    @Basic
+    @Column(length = 255, nullable = true)
+    private String codeDocumentPdsign;
 
+    @ManyToOne
+//    @JoinColumn(name = "social_action_id")
+    private SocialActionModel socialActionId;
+
+    public SocialActionModel getSocialActionId() {
+        return socialActionId;
     }
+
+    public void setSocialActionId(SocialActionModel socialActionId) {
+        this.socialActionId = socialActionId;
+    }
+
+    @Basic
+    @Column
+    @Temporal(TemporalType.TIMESTAMP) // Specify the date and time
+    @CreationTimestamp
+    private Date createdAt;
+
+    @Basic
+    @Column
+    @Temporal(TemporalType.TIMESTAMP) // Specify the date and time
+    @UpdateTimestamp
+    private Date updatedAt;
+
+
+    @ManyToOne
+//    @JoinColumn(name = "colaborator_id")
+    private UserModel colaborator;
+
+    public UserModel getColaborator() {
+        return colaborator;
+    }
+
+    public void setColaborator(UserModel colaborator) {
+        this.colaborator = colaborator;
+    }
+
+}
