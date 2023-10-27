@@ -85,11 +85,15 @@ public class PdsignService {
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Map<String, Object> responseBody = responseEntity.getBody();
-            // Verifique se o campo "id" está presente no mapa antes de acessá-lo
-            if (responseBody.containsKey("status")) {
-                return responseBody.get("status").toString();
+            if (responseBody != null) { // Check if responseBody is not null
+                // Verifique se o campo "status" está presente no mapa antes de acessá-lo
+                if (responseBody.containsKey("status")) {
+                    return responseBody.get("status").toString();
+                } else {
+                    return "Campo 'status' não encontrado na resposta.";
+                }
             } else {
-                return "Campo 'status' não encontrado na resposta.";
+                return "Resposta nula recebida.";
             }
         } else {
             return "Requisição não foi bem-sucedida. Código de status: " + responseEntity.getStatusCodeValue();
@@ -155,11 +159,7 @@ public class PdsignService {
             Map<String, Object> responseBody = responseEntity.getBody();
             socialActionContract = this.socialActionContractService.saveProcessColaborator(responseBody.get("id").toString(), socialActionContract);
 
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            sleepForMilliseconds(10000);
 
             SocialActionContractDTO result = this.createDocumentPdSign(socialActionContract, token);
 
@@ -197,11 +197,7 @@ public class PdsignService {
             Map<String, Object> responseBody = responseEntity.getBody();
             socialActionContract = this.socialActionContractService.saveDocumentColaborator(responseBody.get("id").toString(), socialActionContract);
 
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            sleepForMilliseconds(10000);
 
             SocialActionContractDTO socialActionContractDTO = this.sendProcessDocumentPdSign(socialActionContract, token);
             return socialActionContractDTO;
@@ -232,11 +228,7 @@ public class PdsignService {
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
 
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            sleepForMilliseconds(10000);
 
             SocialActionContractDTO socialActionContractDTO = this.authorizeForSignature(socialActionContract,token);
             return socialActionContractDTO;
@@ -278,5 +270,17 @@ public class PdsignService {
             map.put(key, transformedValue);
         }
     }
+
+    private void sleepForMilliseconds(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+
+
+
 
 }

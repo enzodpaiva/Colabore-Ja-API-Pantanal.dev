@@ -18,34 +18,33 @@ public class PdfGenerate {
     public static File createContractPDF(SocialActionContractModel socialActionContract) {
         String fileName = generateFileName(socialActionContract);
 
-        try (PdfDocument pdfDoc = new PdfDocument(new PdfWriter(fileName))) {
-            try (Document doc = new Document(pdfDoc, PageSize.A4)) {
-                // Add Header
-                addHeader(doc);
+        try (PdfDocument pdfDoc = new PdfDocument(new PdfWriter(fileName));
+             Document doc = new Document(pdfDoc, PageSize.A4)) {
+            // Add Header
+            addHeader(doc);
 
-                // Add Contract Details
-                addContractDetails(doc, socialActionContract);
+            // Add Contract Details
+            addContractDetails(doc, socialActionContract);
 
-                // Add Collaborator Details
-                addCollaboratorDetails(doc, socialActionContract);
+            // Add Collaborator Details
+            addCollaboratorDetails(doc, socialActionContract);
 
-                // Add Social Action Details
-                addSocialActionDetails(doc, socialActionContract);
+            // Add Social Action Details
+            addSocialActionDetails(doc, socialActionContract);
 
-                // Add Footer with Terms and Conditions
-                addFooter(doc);
+            // Add Footer with Terms and Conditions
+            addFooter(doc);
+
+            File pdfFile = new File(fileName);
+            if (pdfFile.exists()) {
+                System.out.println("PDF file created: " + pdfFile.getAbsolutePath());
+                return pdfFile;
+            } else {
+                System.out.println("Failed to create the PDF file.");
+                return null;
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        File pdfFile = new File(fileName);
-
-        if (pdfFile.exists()) {
-            System.out.println("PDF file created: " + pdfFile.getAbsolutePath());
-            return pdfFile;
-        } else {
-            System.out.println("Failed to create the PDF file.");
             return null;
         }
     }
