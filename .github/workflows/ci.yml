@@ -36,11 +36,11 @@ jobs:
 #      - name: Run Tests (If applicable)
 #        run: docker run --rm -v "$PWD":/app -w /app maven:3.8.1-openjdk-17-slim mvn test
 #
-#      - name: Executa testes
-#        run: mvn -Dspring.profiles.active=test --batch-mode --update-snapshots verify
+      - name: Executa testes
+        run: mvn -Dspring.profiles.active=test --batch-mode --update-snapshots verify
 #
-      - name: 🚀 Coveralls Coverage Report Submission
-        run: mvn coveralls:report --define repoToken=${{ secrets.COVERALLS_REPO_TOKEN }}
+#      - name: 🚀 Coveralls Coverage Report Submission
+#        run: mvn coveralls:report --define repoToken=${{ secrets.COVERALLS_REPO_TOKEN }}
 
 #      - name: Analisa com SonarCloud
 #        run: mvn -B verify sonar:sonar -Dspring.profiles.active=test -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORGANIZATION -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
