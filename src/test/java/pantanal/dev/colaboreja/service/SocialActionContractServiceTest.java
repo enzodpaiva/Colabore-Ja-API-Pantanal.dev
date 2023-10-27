@@ -9,6 +9,7 @@ import pantanal.dev.colaboreja.DTO.SocialActionContractDTO;
 import pantanal.dev.colaboreja.enumerable.SocialActionContractStatusEnum;
 import pantanal.dev.colaboreja.model.SocialActionContractModel;
 import pantanal.dev.colaboreja.model.SocialActionModel;
+import pantanal.dev.colaboreja.model.UserModel;
 import pantanal.dev.colaboreja.repository.SocialActionContractRepository;
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class SocialActionContractServiceTest {
 
     @Mock
     private SocialActionService socialActionService;
+    @Mock
+    private UserService userService;
 
     @BeforeEach
     public void setUp() {
@@ -39,22 +42,33 @@ public class SocialActionContractServiceTest {
         // Crie um objeto SocialActionContractDTO simulado
         SocialActionContractDTO contractDTO = new SocialActionContractDTO();
         contractDTO.setSocialActionId(1L);
-        contractDTO.setKeyContract("ContractKey");
-        contractDTO.setStatusContract(SocialActionContractStatusEnum._2D.toString());
+        contractDTO.setKeyProcess("ContractKey");
+        contractDTO.setKeyDocument("DocumentKey");
+        contractDTO.setCodeDocumentPdsign("143242");
+        contractDTO.setStatusContract(SocialActionContractStatusEnum.CREATED);
 
         // Crie um objeto SocialActionModel simulado
         SocialActionModel socialAction = new SocialActionModel();
         socialAction.setId(1L);
 
+        UserModel colaborator = new UserModel();
+        colaborator.setId(1);
+
         // Simule o comportamento do serviço de ação social para retornar um objeto SocialActionModel simulado
         Mockito.when(socialActionService.getSocialActionById(contractDTO.getSocialActionId()))
                 .thenReturn(Optional.of(socialAction));
 
+        // Simule o comportamento do serviço de ação social para retornar um objeto SocialActionModel simulado
+        Mockito.when(userService.getUserById(contractDTO.getColaborator()))
+                .thenReturn(Optional.of(colaborator));
+
         // Crie um objeto SocialActionContractModel simulado
         SocialActionContractModel contractModel = new SocialActionContractModel();
         contractModel.setId(1L);
-        contractModel.setKeyContract("ContractKey");
-        contractModel.setStatusContract(SocialActionContractStatusEnum._2D);
+        contractModel.setKeyProcess("ContractKey");
+        contractModel.setKeyDocument("DocumentKey");
+        contractModel.setCodeDocumentPdsign("143242");
+        contractModel.setStatusContract(SocialActionContractStatusEnum.CREATED);
 
         // Simule o comportamento do repositório ao salvar o objeto
         Mockito.when(socialActionContractRepository.save(Mockito.any(SocialActionContractModel.class)))
@@ -140,13 +154,13 @@ public class SocialActionContractServiceTest {
         contractList.add(new SocialActionContractModel());
 
         // Simule o comportamento do repositório para retornar a lista simulada com base na chave do contrato
-        Mockito.when(socialActionContractRepository.findByKeyContractContainingIgnoreCase(keyContract))
+        Mockito.when(socialActionContractRepository.findByKeyProcessContainingIgnoreCase(keyContract))
                 .thenReturn(contractList);
 
         List<SocialActionContractModel> result = socialActionContractService.findSocialActionContract(keyContract);
 
         // Verifique se o método do repositório foi chamado corretamente
-        Mockito.verify(socialActionContractRepository).findByKeyContractContainingIgnoreCase(keyContract);
+        Mockito.verify(socialActionContractRepository).findByKeyProcessContainingIgnoreCase(keyContract);
 
         // Verifique se o resultado não é nulo e tem o tamanho esperado
         assertEquals(contractList.size(), result.size());
@@ -185,8 +199,8 @@ public class SocialActionContractServiceTest {
         // Crie um objeto DTO simulado para atualização
         SocialActionContractDTO updateDTO = new SocialActionContractDTO();
         updateDTO.setSocialActionId(2L);  // Novo ID de ação social
-        updateDTO.setKeyContract("UpdatedContractKey");
-        updateDTO.setStatusContract(SocialActionContractStatusEnum._3D.toString());
+        updateDTO.setKeyProcess("UpdatedContractKey");
+        updateDTO.setStatusContract(SocialActionContractStatusEnum.CREATED);
 
         // Crie um objeto SocialActionModel simulado com o novo ID
         SocialActionModel socialAction = new SocialActionModel();
@@ -212,7 +226,7 @@ public class SocialActionContractServiceTest {
         Mockito.verify(socialActionContractRepository).save(Mockito.any(SocialActionContractModel.class));
 
         // Verifique se o contrato foi atualizado corretamente
-        assertEquals(updateDTO.getKeyContract(), updatedContract.getKeyContract());
+        assertEquals(updateDTO.getKeyProcess(), updatedContract.getKeyProcess());
         assertEquals(updateDTO.getStatusContract(), updatedContract.getStatusContract().label);
         assertEquals(updateDTO.getSocialActionId(), updatedContract.getSocialActionId().getId());
     }

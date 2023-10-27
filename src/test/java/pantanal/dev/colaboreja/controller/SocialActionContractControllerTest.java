@@ -9,8 +9,10 @@
     import org.springframework.test.web.servlet.MockMvc;
     import org.springframework.test.web.servlet.setup.MockMvcBuilders;
     import pantanal.dev.colaboreja.DTO.SocialActionContractDTO;
+    import pantanal.dev.colaboreja.enumerable.RoleEnum;
     import pantanal.dev.colaboreja.model.SocialActionContractModel;
     import pantanal.dev.colaboreja.model.SocialActionModel;
+    import pantanal.dev.colaboreja.model.UserModel;
     import pantanal.dev.colaboreja.service.SocialActionContractService;
     import pantanal.dev.colaboreja.enumerable.SocialActionContractStatusEnum;
 
@@ -42,18 +44,31 @@
             socialActionModel.setName("Ação Social 1");
             // Defina outros campos do modelo
 
+            UserModel colaborator = new UserModel();
+            colaborator.setFirstname("PrimeiroNome");
+            colaborator.setLastname("UltimoNome");
+            colaborator.setEmail("email@exemplo.com");
+            colaborator.setPassword("senha");
+            colaborator.setDescription("Descrição do usuário");
+            colaborator.setRole(RoleEnum.ADMIN); // Defina o RoleEnum apropriado
+
+
             // Crie um objeto SocialActionContractDTO simulado
             SocialActionContractDTO socialActionContractDTO = SocialActionContractDTO.builder()
-                    .keyContract("Contrato123")
-                    .statusContract("Ativo")
+                    .keyProcess("Contrato123")
+                    .keyDocument("Documento123")
+                    .statusContract(SocialActionContractStatusEnum.CREATED)
+                    .codeDocumentPdsign("3124123")
                     .socialActionId(socialActionModel.getId()) // Associe o SocialActionModel pelo ID
+                    .colaborator(colaborator.getId()) // Associe o SocialActionModel pelo ID
                     .build();
 
             // Crie uma instância de SocialActionContractModel simulada
             SocialActionContractModel socialActionContractModel = new SocialActionContractModel();
             socialActionContractModel.setId(1L);
-            socialActionContractModel.setKeyContract(socialActionContractDTO.getKeyContract());
-            socialActionContractModel.setStatusContract(SocialActionContractStatusEnum._3D);
+            socialActionContractModel.setKeyProcess(socialActionContractDTO.getKeyProcess());
+            socialActionContractModel.setKeyDocument(socialActionContractDTO.getKeyDocument());
+            socialActionContractModel.setStatusContract(SocialActionContractStatusEnum.CREATED);
             // Associe o SocialActionModel
             socialActionContractModel.setSocialActionId(socialActionModel);
 
