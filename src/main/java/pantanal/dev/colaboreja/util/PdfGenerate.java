@@ -13,8 +13,13 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class PdfGenerate {
+    private static final Logger logger = LoggerFactory.getLogger(PdfGenerate.class);
+
     public static File createContractPDF(SocialActionContractModel socialActionContract) {
         String fileName = generateFileName(socialActionContract);
 
@@ -44,7 +49,7 @@ public class PdfGenerate {
                 return null;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Ocorreu uma exceção ao criar o PDF", e);
             return null;
         }
     }
