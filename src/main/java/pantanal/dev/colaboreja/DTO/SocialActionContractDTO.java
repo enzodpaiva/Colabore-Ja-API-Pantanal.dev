@@ -38,4 +38,7 @@ public class SocialActionContractDTO {
     @Nullable
     private String codeDocumentPdsign;
 
+    @NotNull(message = "O action do contrato da ação social deve ser informado")
+    private String action;
+
 }

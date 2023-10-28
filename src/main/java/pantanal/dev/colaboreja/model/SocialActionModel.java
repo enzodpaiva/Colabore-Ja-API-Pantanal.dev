@@ -26,7 +26,7 @@ public class SocialActionModel {
     private String name;
 
     @Basic
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Basic
