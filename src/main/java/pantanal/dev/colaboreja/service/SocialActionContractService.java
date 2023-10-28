@@ -83,6 +83,7 @@ public class SocialActionContractService {
 
         SocialActionContractModel existingSocialActionContract = socialActionContract.get();
         existingSocialActionContract.setKeyProcess(socialActionDetails.getKeyProcess());
+        existingSocialActionContract.setAction(socialActionDetails.getAction());
         existingSocialActionContract.setKeyDocument(socialActionDetails.getKeyDocument());
         existingSocialActionContract.setStatusContract(socialActionDetails.getStatusContract());
         existingSocialActionContract.setSocialActionId(result.get());
@@ -104,6 +105,7 @@ public class SocialActionContractService {
                 .keyProcess(socialActionContractDTO.getKeyProcess())
                 .keyDocument(socialActionContractDTO.getKeyDocument())
                 .statusContract(socialActionContractDTO.getStatusContract())
+                .action(socialActionContractDTO.getAction())
                 .build();
     }
 
@@ -145,6 +147,7 @@ public class SocialActionContractService {
     private SocialActionContractDTO convertToDTO(SocialActionContractModel socialActionContractModel) {
         return SocialActionContractDTO.builder()
                 .id(socialActionContractModel.getId())
+                .action(socialActionContractModel.getAction())
                 .keyProcess(socialActionContractModel.getKeyProcess())
                 .keyDocument(socialActionContractModel.getKeyDocument())
                 .statusContract(socialActionContractModel.getStatusContract())

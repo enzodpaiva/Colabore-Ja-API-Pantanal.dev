@@ -82,6 +82,15 @@ public class PdfGenerate {
         table.addCell(new Cell().add(new Paragraph("Key Document:")));
         table.addCell(new Cell().add(new Paragraph(socialActionContract.getKeyDocument())));
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+
+        table.addCell(new Cell().add(new Paragraph("Initial Date & Time:")));
+        table.addCell(new Cell().add(new Paragraph(dateFormat.format(socialActionContract.getSocialActionId().getInitDateTime()))));
+
+        table.addCell(new Cell().add(new Paragraph("Finish Date & Time:")));
+        table.addCell(new Cell().add(new Paragraph(dateFormat.format(socialActionContract.getSocialActionId().getFinishDateTime()))));
+
+
         doc.add(table);
     }
 
@@ -96,6 +105,9 @@ public class PdfGenerate {
 
         table.addCell(new Cell().add(new Paragraph("Email:")));
         table.addCell(new Cell().add(new Paragraph(socialActionContract.getColaborator().getEmail())));
+
+        table.addCell(new Cell().add(new Paragraph("Action in the social action:")));
+        table.addCell(new Cell().add(new Paragraph(socialActionContract.getAction())));
 
         doc.add(table);
     }

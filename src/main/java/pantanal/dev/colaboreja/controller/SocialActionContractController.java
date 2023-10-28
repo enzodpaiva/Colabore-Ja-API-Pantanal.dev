@@ -30,6 +30,7 @@ public class SocialActionContractController {
                 .statusContract(socialActionContractModel.getStatusContract())
                 .socialActionId(socialActionContractModel.getSocialActionId().getId())
                 .colaborator(socialActionContractModel.getColaborator().getId())
+                .action(socialActionContractModel.getAction())
                 .build();
     }
 

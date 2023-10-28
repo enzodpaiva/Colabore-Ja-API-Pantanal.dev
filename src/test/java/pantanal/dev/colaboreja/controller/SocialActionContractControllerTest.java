@@ -55,6 +55,7 @@
 
             // Crie um objeto SocialActionContractDTO simulado
             SocialActionContractDTO socialActionContractDTO = SocialActionContractDTO.builder()
+                    .action("Contrato123")
                     .keyProcess("Contrato123")
                     .keyDocument("Documento123")
                     .statusContract(SocialActionContractStatusEnum.CREATED)
@@ -67,6 +68,7 @@
             SocialActionContractModel socialActionContractModel = new SocialActionContractModel();
             socialActionContractModel.setId(1L);
             socialActionContractModel.setKeyProcess(socialActionContractDTO.getKeyProcess());
+            socialActionContractModel.setAction(socialActionContractDTO.getAction());
             socialActionContractModel.setKeyDocument(socialActionContractDTO.getKeyDocument());
             socialActionContractModel.setStatusContract(SocialActionContractStatusEnum.CREATED);
             // Associe o SocialActionModel

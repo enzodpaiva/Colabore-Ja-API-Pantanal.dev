@@ -42,6 +42,7 @@ public class SocialActionContractServiceTest {
         // Crie um objeto SocialActionContractDTO simulado
         SocialActionContractDTO contractDTO = new SocialActionContractDTO();
         contractDTO.setSocialActionId(1L);
+        contractDTO.setAction("ContractKey");
         contractDTO.setKeyProcess("ContractKey");
         contractDTO.setKeyDocument("DocumentKey");
         contractDTO.setCodeDocumentPdsign("143242");
@@ -65,6 +66,7 @@ public class SocialActionContractServiceTest {
         // Crie um objeto SocialActionContractModel simulado
         SocialActionContractModel contractModel = new SocialActionContractModel();
         contractModel.setId(1L);
+        contractModel.setAction("ContractKey");
         contractModel.setKeyProcess("ContractKey");
         contractModel.setKeyDocument("DocumentKey");
         contractModel.setCodeDocumentPdsign("143242");
@@ -199,6 +201,7 @@ public class SocialActionContractServiceTest {
         // Crie um objeto DTO simulado para atualização
         SocialActionContractDTO updateDTO = new SocialActionContractDTO();
         updateDTO.setSocialActionId(2L);  // Novo ID de ação social
+        updateDTO.setAction("UpdatedContractKey");
         updateDTO.setKeyProcess("UpdatedContractKey");
         updateDTO.setStatusContract(SocialActionContractStatusEnum.CREATED);
 

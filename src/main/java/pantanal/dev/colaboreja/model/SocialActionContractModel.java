@@ -36,6 +36,10 @@ public class SocialActionContractModel {
     @Column(length = 255, nullable = true)
     private String codeDocumentPdsign;
 
+    @Basic
+    @Column(length = 255)
+    private String action;
+
     @ManyToOne
 //    @JoinColumn(name = "social_action_id")
     private SocialActionModel socialActionId;
