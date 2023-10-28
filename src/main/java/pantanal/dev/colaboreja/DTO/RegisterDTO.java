@@ -19,4 +19,5 @@ public class RegisterDTO {
     private String email;
     private String password;
     private RoleEnum role;
+    private String description;
 }

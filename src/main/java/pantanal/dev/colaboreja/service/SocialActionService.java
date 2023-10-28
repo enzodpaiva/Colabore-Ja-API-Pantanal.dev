@@ -19,13 +19,17 @@ public class SocialActionService {
     @Autowired
     private SocialActionCategoryService socialActionCategoryService;
 
+    @Autowired
+    private UserService userService;
+
     public SocialActionModel createSocialAction(SocialActionDTO socialAction) {
 
-        var result = this.socialActionCategoryService.getSocialActionCategoryById(socialAction.getSocialActionCategoryId());
-
+        var category = this.socialActionCategoryService.getSocialActionCategoryById(socialAction.getSocialActionCategoryId());
+        var author = this.userService.getUserById(socialAction.getAuthor());
         var resultConvertEntity = this.convertToEntity(socialAction);
 
-        resultConvertEntity.setSocialActionCategoryId(result.get());
+        resultConvertEntity.setSocialActionCategoryId(category.get());
+        resultConvertEntity.setAuthor(author.get());
 
         return this.socialActionRepository.save(resultConvertEntity);
     }
@@ -53,7 +57,8 @@ public class SocialActionService {
     }
 
     public SocialActionModel updateSocialAction(Long id, SocialActionDTO socialActionDetails) {
-        var result = this.socialActionCategoryService.getSocialActionCategoryById(socialActionDetails.getSocialActionCategoryId());
+        var category = this.socialActionCategoryService.getSocialActionCategoryById(socialActionDetails.getSocialActionCategoryId());
+        var author = this.userService.getUserById(socialActionDetails.getAuthor().intValue());
         Optional<SocialActionModel> socialAction = this.socialActionRepository.findById(id);
         if (!socialAction.isPresent()) {
             throw new NoSuchElementException("Ação social com o ID especificado não foi encontrada");
@@ -64,7 +69,9 @@ public class SocialActionService {
         existingSocialAction.setDescription(socialActionDetails.getDescription());
         existingSocialAction.setInitDateTime(socialActionDetails.getInitDateTime());
         existingSocialAction.setFinishDateTime(socialActionDetails.getFinishDateTime());
-        existingSocialAction.setSocialActionCategoryId(result.get());
+        existingSocialAction.setSocialActionCategoryId(category.get());
+        existingSocialAction.setAuthor(author.get());
+        existingSocialAction.setLocation(socialActionDetails.getLocation());
 
         return this.socialActionRepository.save(existingSocialAction);
     }
@@ -84,6 +91,7 @@ public class SocialActionService {
                 .description(socialAction.getDescription())
                 .initDateTime(socialAction.getInitDateTime())
                 .finishDateTime(socialAction.getFinishDateTime())
+                .location(socialAction.getLocation())
                 .build();
     }
 
@@ -95,6 +103,8 @@ public class SocialActionService {
                 .initDateTime(socialAction.getInitDateTime())
                 .finishDateTime(socialAction.getFinishDateTime())
                 .socialActionCategoryId(socialAction.getSocialActionCategoryId().getId())
+                .author(socialAction.getAuthor().getId())
+                .location(socialAction.getLocation())
                 .build();
     }
     // TO DO: buscar por outros campos
